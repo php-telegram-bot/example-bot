@@ -1,0 +1,22 @@
+{
+    "name": "telegram-bot/example-bot",
+    "type": "project",
+    "description": "PHP Telegram Bot Example",
+    "keywords": ["telegram", "bot", "example"],
+    "license": "MIT",
+    "homepage": "https://github.com/php-telegram-bot/example-bot",
+    "support": {
+        "issues": "https://github.com/php-telegram-bot/example-bot/issues",
+        "source": "https://github.com/php-telegram-bot/example-bot"
+    },
+    "authors": [
+        {
+            "name": "PHP Telegram Bot Team",
+            "homepage": "https://github.com/php-telegram-bot/example-bot/graphs/contributors",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "longman/telegram-bot": "^0.43"
+    }
+}
