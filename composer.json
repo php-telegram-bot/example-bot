@@ -17,6 +17,6 @@
         }
     ],
     "require": {
-        "longman/telegram-bot": "^0.43"
+        "longman/telegram-bot": "*"
     }
 }
