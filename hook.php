@@ -12,11 +12,18 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 // Add you bot's API key and name
-$bot_api_key  = 'your_bot_api_key';
+$bot_api_key  = 'your:bot_api_key';
 $bot_username = 'username_bot';
 
-// Define a path for your custom commands
-//$commands_path = __DIR__ . '/Commands/';
+// Define all IDs of admin users in this array (leave as empty array if not used)
+$admin_users = [
+//    123,
+];
+
+// Define all paths for your custom commands in this array (leave as empty array if not used)
+$commands_paths = [
+//    __DIR__ . '/Commands/',
+];
 
 // Enter your MySQL database credentials
 //$mysql_credentials = [
@@ -30,51 +37,40 @@ try {
     // Create Telegram API object
     $telegram = new Longman\TelegramBot\Telegram($bot_api_key, $bot_username);
 
-    // Error, Debug and Raw Update logging - Don't forget to define the $path
-    //Longman\TelegramBot\TelegramLog::initialize($your_external_monolog_instance);
-    //Longman\TelegramBot\TelegramLog::initErrorLog($path . '/' . $bot_username . '_error.log');
-    //Longman\TelegramBot\TelegramLog::initDebugLog($path . '/' . $bot_username . '_debug.log');
-    //Longman\TelegramBot\TelegramLog::initUpdateLog($path . '/' . $bot_username . '_update.log');
+    // Add commands paths containing your custom commands
+    $telegram->addCommandsPaths($commands_paths);
+
+    // Enable admin users
+    $telegram->enableAdmins($admin_users);
 
     // Enable MySQL
     //$telegram->enableMySql($mysql_credentials);
 
-    // Enable MySQL with table prefix
-    //$telegram->enableMySql($mysql_credentials, $bot_username . '_');
+    // Logging (Error, Debug and Raw Updates)
+    //Longman\TelegramBot\TelegramLog::initErrorLog(__DIR__ . "/{$bot_username}_error.log");
+    //Longman\TelegramBot\TelegramLog::initDebugLog(__DIR__ . "/{$bot_username}_debug.log");
+    //Longman\TelegramBot\TelegramLog::initUpdateLog(__DIR__ . "/{$bot_username}_update.log");
 
-    // Uncomment this line to load example commands
-    //$telegram->addCommandsPath(BASE_PATH . '/../examples/Commands');
+    // If you are using a custom Monolog instance for logging, use this instead of the above
+    //Longman\TelegramBot\TelegramLog::initialize($your_external_monolog_instance);
 
-    // Add commands path containing your commands
-    //$telegram->addCommandsPath($commands_path);
+    // Set custom Upload and Download paths
+    //$telegram->setDownloadPath(__DIR__ . '/Download');
+    //$telegram->setUploadPath(__DIR__ . '/Upload');
 
-    // Enable admin user(s)
-    //$telegram->enableAdmin(your_telegram_id);
-    //$telegram->enableAdmins([your_telegram_id, other_telegram_id]);
-
-    // Add the channel you want to manage
-    //$telegram->setCommandConfig('sendtochannel', ['your_channel' => '@type_here_your_channel']);
-
-    // Here you can set some command specific parameters,
-    // for example, google geocode/timezone api key for /date command:
+    // Here you can set some command specific parameters
+    // e.g. Google geocode/timezone api key for /date command
     //$telegram->setCommandConfig('date', ['google_api_key' => 'your_google_api_key_here']);
 
-    // Set custom Upload and Download path
-    //$telegram->setDownloadPath('../Download');
-    //$telegram->setUploadPath('../Upload');
-
     // Botan.io integration
-    // Second argument are options
-    //$telegram->enableBotan('your_token');
-    //$telegram->enableBotan('your_token', ['timeout' => 3]);
+    //$telegram->enableBotan('your_botan_token');
 
     // Requests Limiter (tries to prevent reaching Telegram API limits)
-    // First argument are options
     $telegram->enableLimiter();
-    //$telegram->enableLimiter(['interval' => 0.5);
 
     // Handle telegram webhook request
     $telegram->handle();
+
 } catch (Longman\TelegramBot\Exception\TelegramException $e) {
     // Silence is golden!
     //echo $e;
@@ -82,6 +78,6 @@ try {
     Longman\TelegramBot\TelegramLog::error($e);
 } catch (Longman\TelegramBot\Exception\TelegramLogException $e) {
     // Silence is golden!
-    // Uncomment this to catch log initilization errors
+    // Uncomment this to catch log initialisation errors
     //echo $e;
 }

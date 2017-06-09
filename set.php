@@ -8,8 +8,11 @@
 // Load composer
 require_once __DIR__ . '/vendor/autoload.php';
 
-$bot_api_key  = 'your_bot_api_key';
+// Add you bot's API key and name
+$bot_api_key  = 'your:bot_api_key';
 $bot_username = 'username_bot';
+
+// Define the URL to your hook.php file
 $hook_url     = 'https://your-domain/path/to/hook.php';
 
 try {
@@ -19,12 +22,12 @@ try {
     // Set webhook
     $result = $telegram->setWebhook($hook_url);
 
-    // Uncomment to use certificate
-    //$result = $telegram->setWebhook($hook_url, ['certificate' => $path_certificate]);
+    // To use a self-signed certificate, use this line instead
+    //$result = $telegram->setWebhook($hook_url, ['certificate' => $certificate_path]);
 
     if ($result->isOk()) {
         echo $result->getDescription();
     }
 } catch (Longman\TelegramBot\Exception\TelegramException $e) {
-    echo $e;
+    echo $e->getMessage();
 }
