@@ -18,7 +18,7 @@ use Longman\TelegramBot\Entities\PhotoSize;
 use Longman\TelegramBot\Request;
 
 /**
- * User "/survery" command
+ * User "/survey" command
  */
 class SurveyCommand extends UserCommand
 {
