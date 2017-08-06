@@ -16,6 +16,8 @@ use Longman\TelegramBot\Request;
 
 /**
  * User "/shortener" command
+ *
+ * Create a shortened URL using Botan.
  */
 class ShortenerCommand extends UserCommand
 {

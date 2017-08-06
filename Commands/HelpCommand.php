@@ -16,6 +16,8 @@ use Longman\TelegramBot\Request;
 
 /**
  * User "/help" command
+ *
+ * Command that lists all available commands and displays them in User and Admin sections.
  */
 class HelpCommand extends UserCommand
 {

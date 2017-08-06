@@ -16,6 +16,8 @@ use Longman\TelegramBot\Request;
 
 /**
  * User "/inlinekeyboard" command
+ *
+ * Display an inline keyboard with a few buttons.
  */
 class InlinekeyboardCommand extends UserCommand
 {

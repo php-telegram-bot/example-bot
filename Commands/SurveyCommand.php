@@ -19,6 +19,8 @@ use Longman\TelegramBot\Request;
 
 /**
  * User "/survey" command
+ *
+ * Command that demonstrated the Conversation funtionality in form of a simple survey.
  */
 class SurveyCommand extends UserCommand
 {
@@ -46,6 +48,11 @@ class SurveyCommand extends UserCommand
      * @var bool
      */
     protected $need_mysql = true;
+
+    /**
+     * @var bool
+     */
+    protected $private_only = true;
 
     /**
      * Conversation Object

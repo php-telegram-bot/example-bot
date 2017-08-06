@@ -15,6 +15,8 @@ use Longman\TelegramBot\Request;
 
 /**
  * Start command
+ *
+ * Gets executed when a user first starts using the bot.
  */
 class StartCommand extends SystemCommand
 {
@@ -37,6 +39,11 @@ class StartCommand extends SystemCommand
      * @var string
      */
     protected $version = '1.1.0';
+
+    /**
+     * @var bool
+     */
+    protected $private_only = true;
 
     /**
      * Command execute method

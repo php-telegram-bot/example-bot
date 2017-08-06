@@ -16,6 +16,8 @@ use Longman\TelegramBot\Request;
 
 /**
  * User "/hidekeyboard" command
+ *
+ * Command to hide the keyboard.
  */
 class HidekeyboardCommand extends UserCommand
 {

@@ -14,13 +14,15 @@ use Longman\TelegramBot\Commands\SystemCommand;
 
 /**
  * Migrate from chat id command
+ *
+ * Gets executed when a chat gets migrated.
  */
 class MigratefromchatidCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'Migratefromchatid';
+    protected $name = 'migratefromchatid';
 
     /**
      * @var string

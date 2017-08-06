@@ -14,13 +14,15 @@ use Longman\TelegramBot\Commands\SystemCommand;
 
 /**
  * Group chat created command
+ *
+ * Gets executed when a group chat is created.
  */
 class GroupchatcreatedCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'Groupchatcreated';
+    protected $name = 'groupchatcreated';
 
     /**
      * @var string

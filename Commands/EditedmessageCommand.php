@@ -14,6 +14,8 @@ use Longman\TelegramBot\Commands\SystemCommand;
 
 /**
  * Edited message command
+ *
+ * Gets executed when a user message is edited.
  */
 class EditedmessageCommand extends SystemCommand
 {
@@ -30,7 +32,7 @@ class EditedmessageCommand extends SystemCommand
     /**
      * @var string
      */
-    protected $version = '1.1.0';
+    protected $version = '1.1.1';
 
     /**
      * Command execute method
@@ -40,8 +42,7 @@ class EditedmessageCommand extends SystemCommand
      */
     public function execute()
     {
-        //$update = $this->getUpdate();
-        //$edited_message = $update->getEditedMessage();
+        //$edited_message = $this->getEditedMessage();
 
         return parent::execute();
     }

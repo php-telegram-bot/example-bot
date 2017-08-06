@@ -16,6 +16,8 @@ use Longman\TelegramBot\Request;
 
 /**
  * User "/markdown" command
+ *
+ * Print some markdown text.
  */
 class MarkdownCommand extends UserCommand
 {

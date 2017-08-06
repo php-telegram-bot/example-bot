@@ -15,6 +15,8 @@ use Longman\TelegramBot\Request;
 
 /**
  * User "/echo" command
+ *
+ * Simply echo the input back to the user.
  */
 class EchoCommand extends UserCommand
 {

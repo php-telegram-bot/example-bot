@@ -14,13 +14,15 @@ use Longman\TelegramBot\Commands\SystemCommand;
 
 /**
  * Delete chat photo command
+ *
+ * Gets executed when the photo of a group or channel gets deleted.
  */
 class DeletechatphotoCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'Deletechatphoto';
+    protected $name = 'deletechatphoto';
 
     /**
      * @var string

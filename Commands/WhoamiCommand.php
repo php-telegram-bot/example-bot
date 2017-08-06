@@ -20,6 +20,8 @@ use Longman\TelegramBot\Request;
 
 /**
  * User "/whoami" command
+ *
+ * Simple command that returns info about the current user.
  */
 class WhoamiCommand extends UserCommand
 {
@@ -42,6 +44,11 @@ class WhoamiCommand extends UserCommand
      * @var string
      */
     protected $version = '1.1.0';
+
+    /**
+     * @var bool
+     */
+    protected $private_only = true;
 
     /**
      * Command execute method

@@ -42,7 +42,7 @@ class CancelCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '0.2.0';
+    protected $version = '0.2.1';
 
     /**
      * @var bool
@@ -83,13 +83,11 @@ class CancelCommand extends UserCommand
      */
     private function removeKeyboard($text)
     {
-        return Request::sendMessage(
-            [
-                'reply_markup' => Keyboard::remove(['selective' => true]),
-                'chat_id'      => $this->getMessage()->getChat()->getId(),
-                'text'         => $text,
-            ]
-        );
+        return Request::sendMessage([
+            'reply_markup' => Keyboard::remove(['selective' => true]),
+            'chat_id'      => $this->getMessage()->getChat()->getId(),
+            'text'         => $text,
+        ]);
     }
 
     /**

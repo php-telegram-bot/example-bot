@@ -16,13 +16,15 @@ use Longman\TelegramBot\Request;
 
 /**
  * Generic message command
+ *
+ * Gets executed when any type of message is sent.
  */
 class GenericmessageCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'Genericmessage';
+    protected $name = 'genericmessage';
 
     /**
      * @var string

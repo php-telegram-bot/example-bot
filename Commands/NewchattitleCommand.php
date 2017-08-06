@@ -14,13 +14,15 @@ use Longman\TelegramBot\Commands\SystemCommand;
 
 /**
  * New chat title command
+ *
+ * Gets executed when the title of a group or channel gets set.
  */
 class NewchattitleCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'Newchattitle';
+    protected $name = 'newchattitle';
 
     /**
      * @var string

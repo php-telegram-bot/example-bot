@@ -16,6 +16,8 @@ use Longman\TelegramBot\Request;
 
 /**
  * User "/keyboard" command
+ *
+ * Display a keyboard with a few buttons.
  */
 class KeyboardCommand extends UserCommand
 {

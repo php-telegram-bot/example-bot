@@ -14,13 +14,15 @@ use Longman\TelegramBot\Commands\SystemCommand;
 
 /**
  * Channel chat created command
+ *
+ * Gets executed when a new channel gets created.
  */
 class ChannelchatcreatedCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'Channelchatcreated';
+    protected $name = 'channelchatcreated';
 
     /**
      * @var string

@@ -15,6 +15,8 @@ use Longman\TelegramBot\Request;
 
 /**
  * User "/editmessage" command
+ *
+ * Command to edit a message via bot.
  */
 class EditmessageCommand extends UserCommand
 {
@@ -36,7 +38,7 @@ class EditmessageCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '1.0.0';
+    protected $version = '1.1.0';
 
     /**
      * Command execute method
@@ -58,7 +60,18 @@ class EditmessageCommand extends UserCommand
                 'text'       => $text ?: 'Edited message',
             ];
 
-            return Request::editMessageText($data_edit);
+            // Try to edit selected message.
+            $result = Request::editMessageText($data_edit);
+
+            if ($result->isOk()) {
+                // Delete this editing reply message.
+                Request::deleteMessage([
+                    'chat_id'    => $chat_id,
+                    'message_id' => $message->getMessageId(),
+                ]);
+            }
+
+            return $result;
         }
 
         $data = [

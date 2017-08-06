@@ -19,6 +19,9 @@ use Longman\TelegramBot\TelegramLog;
 
 /**
  * User "/weather" command
+ *
+ * Get weather info for any place.
+ * This command requires an API key to be set via command config.
  */
 class WeatherCommand extends UserCommand
 {

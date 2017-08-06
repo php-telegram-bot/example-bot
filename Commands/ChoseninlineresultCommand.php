@@ -14,6 +14,8 @@ use Longman\TelegramBot\Commands\SystemCommand;
 
 /**
  * Chosen inline result command
+ *
+ * Gets executed when an item from an inline query is selected.
  */
 class ChoseninlineresultCommand extends SystemCommand
 {
@@ -30,7 +32,7 @@ class ChoseninlineresultCommand extends SystemCommand
     /**
      * @var string
      */
-    protected $version = '1.1.0';
+    protected $version = '1.1.1';
 
     /**
      * Command execute method
@@ -41,9 +43,8 @@ class ChoseninlineresultCommand extends SystemCommand
     public function execute()
     {
         //Information about chosen result is returned
-        //$update = $this->getUpdate();
-        //$inline_query = $update->getChosenInlineResult();
-        //$query = $inline_query->getQuery();
+        //$inline_query = $this->getChosenInlineResult();
+        //$query        = $inline_query->getQuery();
 
         return parent::execute();
     }

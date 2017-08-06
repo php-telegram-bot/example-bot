@@ -15,6 +15,8 @@ use Longman\TelegramBot\Request;
 
 /**
  * User "/slap" command
+ *
+ * Slap a user around with a big trout!
  */
 class SlapCommand extends UserCommand
 {

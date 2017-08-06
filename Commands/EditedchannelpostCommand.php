@@ -14,13 +14,15 @@ use Longman\TelegramBot\Commands\SystemCommand;
 
 /**
  * Edited channel post command
+ *
+ * Gets executed when a post in a channel is edited.
  */
 class EditedchannelpostCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'Editedchannelpost';
+    protected $name = 'editedchannelpost';
 
     /**
      * @var string

@@ -10,8 +10,6 @@
 
 namespace Longman\TelegramBot\Commands\UserCommands;
 
-use DateTime;
-use DateTimeZone;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Longman\TelegramBot\Commands\UserCommand;
@@ -20,6 +18,11 @@ use Longman\TelegramBot\TelegramLog;
 
 /**
  * User "/date" command
+ *
+ * Shows the date and time of the location passed as the parameter.
+ *
+ * A Google API key is required for this command, and it can be set in your hook file:
+ * $telegram->setCommandConfig('date', ['google_api_key' => 'your_api_key']);
  */
 class DateCommand extends UserCommand
 {
@@ -41,7 +44,7 @@ class DateCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '1.4.0';
+    protected $version = '1.4.1';
 
     /**
      * Guzzle Client object
@@ -72,7 +75,7 @@ class DateCommand extends UserCommand
     private $date_format = 'd-m-Y H:i:s';
 
     /**
-     * Get coordinates
+     * Get coordinates of passed location
      *
      * @param string $location
      *
@@ -109,7 +112,7 @@ class DateCommand extends UserCommand
     }
 
     /**
-     * Get date
+     * Get date for location passed via coordinates
      *
      * @param string $lat
      * @param string $lng
@@ -120,7 +123,7 @@ class DateCommand extends UserCommand
     {
         $path = 'timezone/json';
 
-        $date_utc  = new \DateTime(null, new \DateTimeZone('UTC'));
+        $date_utc  = new \DateTimeImmutable(null, new \DateTimeZone('UTC'));
         $timestamp = $date_utc->format('U');
 
         $query = [
@@ -195,7 +198,7 @@ class DateCommand extends UserCommand
 
         list($local_time, $timezone_id) = $this->getDate($lat, $lng);
 
-        $date_utc = new DateTime(gmdate('Y-m-d H:i:s', $local_time), new DateTimeZone($timezone_id));
+        $date_utc = new \DateTimeImmutable(gmdate('Y-m-d H:i:s', $local_time), new \DateTimeZone($timezone_id));
 
         return 'The local time in ' . $timezone_id . ' is: ' . $date_utc->format($this->date_format);
     }

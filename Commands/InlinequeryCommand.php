@@ -17,6 +17,8 @@ use Longman\TelegramBot\Request;
 
 /**
  * Inline query command
+ *
+ * Command that handles inline queries.
  */
 class InlinequeryCommand extends SystemCommand
 {
@@ -33,7 +35,7 @@ class InlinequeryCommand extends SystemCommand
     /**
      * @var string
      */
-    protected $version = '1.1.0';
+    protected $version = '1.1.1';
 
     /**
      * Command execute method
@@ -43,8 +45,7 @@ class InlinequeryCommand extends SystemCommand
      */
     public function execute()
     {
-        $update       = $this->getUpdate();
-        $inline_query = $update->getInlineQuery();
+        $inline_query = $this->getInlineQuery();
         $query        = $inline_query->getQuery();
 
         $data    = ['inline_query_id' => $inline_query->getId()];

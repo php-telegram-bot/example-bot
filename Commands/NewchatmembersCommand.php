@@ -16,22 +16,22 @@ use Longman\TelegramBot\Request;
 /**
  * New chat member command
  */
-class NewchatmemberCommand extends SystemCommand
+class NewchatmembersCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'Newchatmember';
+    protected $name = 'newchatmembers';
 
     /**
      * @var string
      */
-    protected $description = 'New Chat Member';
+    protected $description = 'New Chat Members';
 
     /**
      * @var string
      */
-    protected $version = '1.1.0';
+    protected $version = '1.2.0';
 
     /**
      * Command execute method
@@ -44,11 +44,16 @@ class NewchatmemberCommand extends SystemCommand
         $message = $this->getMessage();
 
         $chat_id = $message->getChat()->getId();
-        $member  = $message->getNewChatMember();
-        $text    = 'Hi there!';
+        $members = $message->getNewChatMembers();
+
+        $text = 'Hi there!';
 
         if (!$message->botAddedInChat()) {
-            $text = 'Hi ' . $member->tryMention() . '!';
+            $member_names = [];
+            foreach ($members as $member) {
+                $member_names[] = $member->tryMention();
+            }
+            $text = 'Hi ' . implode(', ', $member_names) . '!';
         }
 
         $data = [

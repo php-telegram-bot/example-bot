@@ -11,11 +11,12 @@
 namespace Longman\TelegramBot\Commands\UserCommands;
 
 use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Entities\ReplyKeyboardMarkup;
 use Longman\TelegramBot\Request;
 
 /**
  * User "/image" command
+ *
+ * Fetch any uploaded image from the Uploads path.
  */
 class ImageCommand extends UserCommand
 {
@@ -37,7 +38,7 @@ class ImageCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '1.0.1';
+    protected $version = '1.1.0';
 
     /**
      * Command execute method
@@ -48,16 +49,31 @@ class ImageCommand extends UserCommand
     public function execute()
     {
         $message = $this->getMessage();
-        $chat_id = $message->getChat()->getId();
-        $text    = $message->getText(true);
+
+        // Use any extra parameters as the caption text.
+        $caption = trim($message->getText(true));
+
+        // Get a random picture from the telegram->getUploadPath() directory.
+        $random_image = $this->GetRandomImagePath($this->telegram->getUploadPath());
 
         $data = [
-            'chat_id' => $chat_id,
-            'caption' => $text,
+            'chat_id' => $message->getChat()->getId(),
         ];
 
-        //Return a random picture from the telegram->getUploadPath().
-        return Request::sendPhoto($data, $this->ShowRandomImage($this->telegram->getUploadPath()));
+        if (!$random_image) {
+            $data['text'] = 'No image found!';
+            return Request::sendMessage($data);
+        }
+
+        // If no caption is set, use the filename.
+        if ($caption === '') {
+            $caption = basename($random_image);
+        }
+
+        $data['caption'] = $caption;
+        $data['photo']   = Request::encodeFile($random_image);
+
+        return Request::sendPhoto($data);
     }
 
     /**
@@ -67,10 +83,14 @@ class ImageCommand extends UserCommand
      *
      * @return string
      */
-    private function ShowRandomImage($dir)
+    private function GetRandomImagePath($dir)
     {
-        $image_list = scandir($dir);
+        // Slice off the . and .. "directories"
+        if ($image_list = array_slice(scandir($dir, SCANDIR_SORT_NONE), 2)) {
+            shuffle($image_list);
+            return $dir . '/' . $image_list[0];
+        }
 
-        return $dir . '/' . $image_list[mt_rand(2, count($image_list) - 1)];
+        return '';
     }
 }

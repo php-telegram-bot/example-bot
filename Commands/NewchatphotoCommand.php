@@ -14,13 +14,15 @@ use Longman\TelegramBot\Commands\SystemCommand;
 
 /**
  * New chat photo command
+ *
+ * Gets executed when the photo of a group or channel gets set.
  */
 class NewchatphotoCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'Newchatphoto';
+    protected $name = 'newchatphoto';
 
     /**
      * @var string

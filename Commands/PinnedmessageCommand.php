@@ -14,13 +14,15 @@ use Longman\TelegramBot\Commands\SystemCommand;
 
 /**
  * Pinned message command
+ *
+ * Gets executed when a message gets pinned.
  */
 class PinnedmessageCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'Pinnedmessage';
+    protected $name = 'pinnedmessage';
 
     /**
      * @var string

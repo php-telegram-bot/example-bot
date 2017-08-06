@@ -15,6 +15,10 @@ use Longman\TelegramBot\Request;
 
 /**
  * Callback query command
+ *
+ * This command handles all callback queries sent via inline keyboard buttons.
+ *
+ * @see InlinekeyboardCommand.php
  */
 class CallbackqueryCommand extends SystemCommand
 {
@@ -31,7 +35,7 @@ class CallbackqueryCommand extends SystemCommand
     /**
      * @var string
      */
-    protected $version = '1.1.0';
+    protected $version = '1.1.1';
 
     /**
      * Command execute method
@@ -41,8 +45,7 @@ class CallbackqueryCommand extends SystemCommand
      */
     public function execute()
     {
-        $update            = $this->getUpdate();
-        $callback_query    = $update->getCallbackQuery();
+        $callback_query    = $this->getCallbackQuery();
         $callback_query_id = $callback_query->getId();
         $callback_data     = $callback_query->getData();
 

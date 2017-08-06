@@ -14,13 +14,15 @@ use Longman\TelegramBot\Commands\SystemCommand;
 
 /**
  * Left chat member command
+ *
+ * Gets executed when a member leaves the chat.
  */
 class LeftchatmemberCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'Leftchatmember';
+    protected $name = 'leftchatmember';
 
     /**
      * @var string

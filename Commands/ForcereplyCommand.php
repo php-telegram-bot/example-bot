@@ -16,8 +16,10 @@ use Longman\TelegramBot\Request;
 
 /**
  * User "/forcereply" command
+ *
+ * Force a reply to a message.
  */
-class ForceReplyCommand extends UserCommand
+class ForcereplyCommand extends UserCommand
 {
     /**
      * @var string

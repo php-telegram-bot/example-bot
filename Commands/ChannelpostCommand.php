@@ -14,13 +14,15 @@ use Longman\TelegramBot\Commands\SystemCommand;
 
 /**
  * Channel post command
+ *
+ * Gets executed when a new post is created in a channel.
  */
 class ChannelpostCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'Channelpost';
+    protected $name = 'channelpost';
 
     /**
      * @var string
