@@ -39,7 +39,7 @@ class HelpCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '1.2.0';
+    protected $version = '1.2.1';
 
     /**
      * @inheritdoc
@@ -47,7 +47,7 @@ class HelpCommand extends UserCommand
     public function execute()
     {
         $message     = $this->getMessage();
-        $chat_id     = $message->getFrom()->getId();
+        $chat_id     = $message->getChat()->getId();
         $command_str = trim($message->getText(true));
 
         $data = [
