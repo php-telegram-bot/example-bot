@@ -64,7 +64,7 @@ class HelpCommand extends UserCommand
                 $data['text'] .= '/' . $user_command->getName() . ' - ' . $user_command->getDescription() . PHP_EOL;
             }
 
-            if (count($admin_commands) > 0) {
+            if ((count($admin_commands) > 0) && !$message->getChat()->isGroupChat() && $this->telegram->isAdmin($message->getFrom()->getId())) {
                 $data['text'] .= PHP_EOL . '*Admin Commands List*:' . PHP_EOL;
                 foreach ($admin_commands as $admin_command) {
                     $data['text'] .= '/' . $admin_command->getName() . ' - ' . $admin_command->getDescription() . PHP_EOL;
