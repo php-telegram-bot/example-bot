@@ -1,12 +1,5 @@
 <?php
-/**
- * This file is part of the TelegramBot package.
- *
- * (c) Avtandil Kikabidze aka LONGMAN <akalongman@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+
 
 namespace Longman\TelegramBot\Commands\UserCommands;
 
@@ -14,7 +7,6 @@ use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Conversation;
 use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Entities\KeyboardButton;
-use Longman\TelegramBot\Entities\PhotoSize;
 use Longman\TelegramBot\Request;
 
 /**
@@ -24,6 +16,7 @@ use Longman\TelegramBot\Request;
  */
 class SurveyCommand extends UserCommand
 {
+
     /**
      * @var string
      */
@@ -61,6 +54,10 @@ class SurveyCommand extends UserCommand
      */
     protected $conversation;
 
+    protected $notes = 'askName';
+
+    protected $chat, $user, $message, $data, $text;
+
     /**
      * Command execute method
      *
@@ -69,190 +66,192 @@ class SurveyCommand extends UserCommand
      */
     public function execute()
     {
-        $message = $this->getMessage();
-
-        $chat    = $message->getChat();
-        $user    = $message->getFrom();
-        $text    = trim($message->getText(true));
-        $chat_id = $chat->getId();
-        $user_id = $user->getId();
+        $this->message = $this->getMessage();
+        $this->chat    = $this->message->getChat();
+        $this->user    = $this->message->getFrom();
+        $this->text    = trim($this->message->getText(true));
 
         //Preparing Response
-        $data = [
-            'chat_id' => $chat_id,
+        $this->data = [
+            'chat_id' => $this->chat->getId(),
         ];
 
-        if ($chat->isGroupChat() || $chat->isSuperGroup()) {
+        if ($this->chat->isGroupChat() || $this->chat->isSuperGroup()) {
             //reply to message id is applied by default
             //Force reply is applied by default so it can work with privacy on
-            $data['reply_markup'] = Keyboard::forceReply(['selective' => true]);
+            $this->data['reply_markup'] = Keyboard::forceReply(['selective' => true]);
         }
+
+        return $this->run();
+    }
+
+
+    public function run()
+    {
 
         //Conversation start
-        $this->conversation = new Conversation($user_id, $chat_id, $this->getName());
+        $this->conversation = new Conversation($this->user->getId(), $this->chat->getId(), $this->getName());
 
-        $notes = &$this->conversation->notes;
-        !is_array($notes) && $notes = [];
+        $this->notes = &$this->conversation->notes;
+        !is_array($this->notes) && $this->notes = [];
 
         //cache data from the tracking session if any
-        $state = 0;
-        if (isset($notes['state'])) {
-            $state = $notes['state'];
+        $state = 'askName';
+        if (isset($this->notes['state'])) {
+            $state = $this->notes['state'];
         }
 
-        $result = Request::emptyResponse();
-
-        //State machine
-        //Entrypoint of the machine state if given by the track
-        //Every time a step is achieved the track is updated
-        switch ($state) {
-            case 0:
-                if ($text === '') {
-                    $notes['state'] = 0;
-                    $this->conversation->update();
-
-                    $data['text']         = 'Type your name:';
-                    $data['reply_markup'] = Keyboard::remove(['selective' => true]);
-
-                    $result = Request::sendMessage($data);
-                    break;
-                }
-
-                $notes['name'] = $text;
-                $text          = '';
-
-            // no break
-            case 1:
-                if ($text === '') {
-                    $notes['state'] = 1;
-                    $this->conversation->update();
-
-                    $data['text'] = 'Type your surname:';
-
-                    $result = Request::sendMessage($data);
-                    break;
-                }
-
-                $notes['surname'] = $text;
-                $text             = '';
-
-            // no break
-            case 2:
-                if ($text === '' || !is_numeric($text)) {
-                    $notes['state'] = 2;
-                    $this->conversation->update();
-
-                    $data['text'] = 'Type your age:';
-                    if ($text !== '') {
-                        $data['text'] = 'Type your age, must be a number:';
-                    }
-
-                    $result = Request::sendMessage($data);
-                    break;
-                }
-
-                $notes['age'] = $text;
-                $text         = '';
-
-            // no break
-            case 3:
-                if ($text === '' || !in_array($text, ['M', 'F'], true)) {
-                    $notes['state'] = 3;
-                    $this->conversation->update();
-
-                    $data['reply_markup'] = (new Keyboard(['M', 'F']))
-                        ->setResizeKeyboard(true)
-                        ->setOneTimeKeyboard(true)
-                        ->setSelective(true);
-
-                    $data['text'] = 'Select your gender:';
-                    if ($text !== '') {
-                        $data['text'] = 'Select your gender, choose a keyboard option:';
-                    }
-
-                    $result = Request::sendMessage($data);
-                    break;
-                }
-
-                $notes['gender'] = $text;
-
-            // no break
-            case 4:
-                if ($message->getLocation() === null) {
-                    $notes['state'] = 4;
-                    $this->conversation->update();
-
-                    $data['reply_markup'] = (new Keyboard(
-                        (new KeyboardButton('Share Location'))->setRequestLocation(true)
-                    ))
-                        ->setOneTimeKeyboard(true)
-                        ->setResizeKeyboard(true)
-                        ->setSelective(true);
-
-                    $data['text'] = 'Share your location:';
-
-                    $result = Request::sendMessage($data);
-                    break;
-                }
-
-                $notes['longitude'] = $message->getLocation()->getLongitude();
-                $notes['latitude']  = $message->getLocation()->getLatitude();
-
-            // no break
-            case 5:
-                if ($message->getPhoto() === null) {
-                    $notes['state'] = 5;
-                    $this->conversation->update();
-
-                    $data['text'] = 'Insert your picture:';
-
-                    $result = Request::sendMessage($data);
-                    break;
-                }
-
-                /** @var PhotoSize $photo */
-                $photo             = $message->getPhoto()[0];
-                $notes['photo_id'] = $photo->getFileId();
-
-            // no break
-            case 6:
-                if ($message->getContact() === null) {
-                    $notes['state'] = 6;
-                    $this->conversation->update();
-
-                    $data['reply_markup'] = (new Keyboard(
-                        (new KeyboardButton('Share Contact'))->setRequestContact(true)
-                    ))
-                        ->setOneTimeKeyboard(true)
-                        ->setResizeKeyboard(true)
-                        ->setSelective(true);
-
-                    $data['text'] = 'Share your contact information:';
-
-                    $result = Request::sendMessage($data);
-                    break;
-                }
-
-                $notes['phone_number'] = $message->getContact()->getPhoneNumber();
-
-            // no break
-            case 7:
-                $this->conversation->update();
-                $out_text = '/Survey result:' . PHP_EOL;
-                unset($notes['state']);
-                foreach ($notes as $k => $v) {
-                    $out_text .= PHP_EOL . ucfirst($k) . ': ' . $v;
-                }
-
-                $data['photo']        = $notes['photo_id'];
-                $data['reply_markup'] = Keyboard::remove(['selective' => true]);
-                $data['caption']      = $out_text;
-                $this->conversation->stop();
-
-                $result = Request::sendPhoto($data);
-                break;
-        }
-
-        return $result;
+        $this->{$state}();
     }
+
+
+    protected function askName()
+    {
+        if ($this->text === '') {
+            $this->notes['state'] = __FUNCTION__;
+            $this->conversation->update();
+
+            $this->data['text']         = 'Type your name:';
+            $this->data['reply_markup'] = Keyboard::remove(['selective' => true]);
+
+            return Request::sendMessage($this->data);
+        }
+
+        $this->notes['name'] = $this->text;
+        $this->text          = '';
+        $this->askSurname();
+    }
+
+    protected function askSurname()
+    {
+        if ($this->text === '') {
+            $this->notes['state'] = __FUNCTION__;
+            $this->conversation->update();
+
+            $this->data['text'] = 'Type your surname:';
+
+            return Request::sendMessage($this->data);
+        }
+
+        $this->notes['surname'] = $this->text;
+        $this->text             = '';
+        $this->askAge();
+    }
+
+    protected function askAge()
+    {
+        if ($this->text === '' || !is_numeric($this->text)) {
+            $this->notes['state'] = __FUNCTION__;
+            $this->conversation->update();
+
+            $this->data['text'] = 'Type your age:';
+            if ($this->text !== '') {
+                $this->data['text'] = 'Type your age, must be a number:';
+            }
+
+            return Request::sendMessage($this->data);
+        }
+
+        $this->notes['age'] = $this->text;
+        $this->text         = '';
+        $this->askGender();
+    }
+
+    protected function askGender()
+    {
+        if ($this->text === '' || !in_array($this->text, ['M', 'F'], true)) {
+
+            $this->notes['state'] = __FUNCTION__;
+            $this->conversation->update();
+
+            $this->data['reply_markup'] = (new Keyboard(['M', 'F']))->setResizeKeyboard(true)
+                                                                    ->setOneTimeKeyboard(true)
+                                                                    ->setSelective(true);
+
+            $this->data['text'] = 'Select your gender:';
+
+            if ($this->text !== '') {
+                $this->data['text'] = 'Select your gender, choose a keyboard option:';
+            }
+
+            return Request::sendMessage($this->data);
+        }
+
+        $this->notes['gender'] = $this->text;
+        $this->askLocation();
+    }
+
+    protected function askLocation()
+    {
+        if ($this->message->getLocation() === null) {
+            $this->notes['state'] = __FUNCTION__;
+            $this->conversation->update();
+
+            $this->data['reply_markup'] = (new Keyboard((new KeyboardButton('Share Location'))->setRequestLocation(true)))->setOneTimeKeyboard(true)
+                                                                                                                          ->setResizeKeyboard(true)
+                                                                                                                          ->setSelective(true);
+
+            $this->data['text'] = 'Share your location:';
+
+            return Request::sendMessage($this->data);
+        }
+
+        $this->notes['longitude'] = $this->message->getLocation()->getLongitude();
+        $this->notes['latitude']  = $this->message->getLocation()->getLatitude();
+        $this->askPhoto();
+    }
+
+    protected function askPhoto()
+    {
+        if ($this->message->getPhoto() === null) {
+            $this->notes['state'] = __FUNCTION__;
+            $this->conversation->update();
+            $this->data['text'] = 'Insert your picture:';
+
+            return Request::sendMessage($this->data);
+        }
+
+        $photo                   = $this->message->getPhoto()[0];
+        $this->notes['photo_id'] = $photo->getFileId();
+        $this->askContact();
+    }
+
+    public function askContact()
+    {
+        if ($this->message->getContact() === null) {
+            $this->notes['state'] = __FUNCTION__;
+            $this->conversation->update();
+
+            $this->data['reply_markup'] = (new Keyboard((new KeyboardButton('Share Contact'))->setRequestContact(true)))->setOneTimeKeyboard(true)
+                                                                                                                        ->setResizeKeyboard(true)
+                                                                                                                        ->setSelective(true);
+
+            $this->data['text'] = 'Share your contact information:';
+
+            return Request::sendMessage($this->data);
+        }
+
+        $this->notes['phone_number'] = $this->message->getContact()->getPhoneNumber();
+        $this->finish();
+    }
+
+    protected function finish()
+    {
+        $this->conversation->update();
+        $out_text = '/Survey result:'.PHP_EOL;
+
+        unset($this->notes['state']);
+
+        foreach ($this->notes as $k => $v) {
+            $out_text .= PHP_EOL.ucfirst($k).': '.$v;
+        }
+
+        $this->data['photo']        = $this->notes['photo_id'];
+        $this->data['reply_markup'] = Keyboard::remove(['selective' => true]);
+        $this->data['caption']      = $out_text;
+        $this->conversation->stop();
+
+        return Request::sendPhoto($this->data);
+    }
+
 }
