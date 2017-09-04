@@ -216,7 +216,7 @@ class SurveyCommand extends UserCommand
         $this->askContact();
     }
 
-    public function askContact()
+    protected function askContact()
     {
         if ($this->message->getContact() === null) {
             $this->notes['state'] = __FUNCTION__;
