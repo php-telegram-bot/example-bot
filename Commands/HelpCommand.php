@@ -64,7 +64,9 @@ class HelpCommand extends UserCommand
                 $data['text'] .= '/' . $user_command->getName() . ' - ' . $user_command->getDescription() . PHP_EOL;
             }
 
-            if ((count($admin_commands) > 0) && !$message->getChat()->isGroupChat() && $this->telegram->isAdmin($message->getFrom()->getId())) {
+            if ((count($admin_commands) > 0) &&
+                    !$message->getChat()->isGroupChat() && $this->telegram->isAdmin($message->getFrom()->getId())) {
+
                 $data['text'] .= PHP_EOL . '*Admin Commands List*:' . PHP_EOL;
                 foreach ($admin_commands as $admin_command) {
                     $data['text'] .= '/' . $admin_command->getName() . ' - ' . $admin_command->getDescription() . PHP_EOL;
@@ -77,7 +79,9 @@ class HelpCommand extends UserCommand
         }
 
         $command_str = str_replace('/', '', $command_str);
-        if (isset($all_commands[$command_str])) {
+        if (isset($all_commands[$command_str]) && (!$all_commands[$command_str]->isAdminCommand()) ||
+                (!$message->getChat()->isGroupChat() && $this->telegram->isAdmin($message->getFrom()->getId()))) {
+
             $command      = $all_commands[$command_str];
             $data['text'] = sprintf(
                 'Command: %s (v%s)' . PHP_EOL .
