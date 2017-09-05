@@ -39,7 +39,7 @@ class HelpCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '1.2.0';
+    protected $version = '1.3.0';
 
     /**
      * @inheritdoc
@@ -47,8 +47,11 @@ class HelpCommand extends UserCommand
     public function execute()
     {
         $message     = $this->getMessage();
-        $chat_id     = $message->getFrom()->getId();
+        $chat_id     = $message->getChat()->getId();
         $command_str = trim($message->getText(true));
+
+        // Admin commands shouldn't be shown in group chats
+        $safe_to_show = $message->getChat()->isPrivateChat();
 
         $data = [
             'chat_id'    => $chat_id,
@@ -64,7 +67,7 @@ class HelpCommand extends UserCommand
                 $data['text'] .= '/' . $user_command->getName() . ' - ' . $user_command->getDescription() . PHP_EOL;
             }
 
-            if (count($admin_commands) > 0) {
+            if ($safe_to_show && count($admin_commands) > 0) {
                 $data['text'] .= PHP_EOL . '*Admin Commands List*:' . PHP_EOL;
                 foreach ($admin_commands as $admin_command) {
                     $data['text'] .= '/' . $admin_command->getName() . ' - ' . $admin_command->getDescription() . PHP_EOL;
@@ -77,7 +80,7 @@ class HelpCommand extends UserCommand
         }
 
         $command_str = str_replace('/', '', $command_str);
-        if (isset($all_commands[$command_str])) {
+        if (isset($all_commands[$command_str]) && ($safe_to_show || !$all_commands[$command_str]->isAdminCommand())) {
             $command      = $all_commands[$command_str];
             $data['text'] = sprintf(
                 'Command: %s (v%s)' . PHP_EOL .
