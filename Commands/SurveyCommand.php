@@ -54,9 +54,7 @@ class SurveyCommand extends UserCommand
      */
     protected $conversation;
 
-    protected $notes = 'askName';
-
-    protected $chat, $user, $message, $data, $text;
+    protected $notes, $chat, $user, $message, $data, $text;
 
     /**
      * Command execute method
