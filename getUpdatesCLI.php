@@ -23,7 +23,7 @@ $admin_users = [
 
 // Define all paths for your custom commands in this array (leave as empty array if not used)
 $commands_paths = [
-//    __DIR__ . '/Commands/',
+  __DIR__ . '/Commands/',
 ];
 
 // Enter your MySQL database credentials
