@@ -86,7 +86,7 @@ class ImageCommand extends UserCommand
     private function GetRandomImagePath($dir)
     {
         // Slice off the . and .. "directories"
-        if ($image_list = array_slice(scandir($dir, SCANDIR_SORT_NONE), 2)) {
+        if ($image_list = array_diff(scandir($dir), array('..', '.'))) {
             shuffle($image_list);
             return $dir . '/' . $image_list[0];
         }
