@@ -5,7 +5,7 @@
  * Uncommented parameters must be filled
  *
  * Please note that if you open this file with your browser you'll get the "Input is empty!" Exception.
- * This is a normal behaviour because this address has to be reached only by the Telegram servers.
+ * This is a normal behavior because this address has to be reached only by the Telegram servers.
  */
 
 // Load composer
@@ -23,6 +23,12 @@ $admin_users = [
 // Define all paths for your custom commands in this array (leave as empty array if not used)
 $commands_paths = [
 //    __DIR__ . '/Commands/',
+];
+
+// Your cronjob command(s) to run, pass it just like in a message (arguments supported)
+$cronjob_commands = [
+    '/whoami',
+    "/echo I'm a bot!",
 ];
 
 // Enter your MySQL database credentials
@@ -62,15 +68,22 @@ try {
     // e.g. Google geocode/timezone api key for /date command
     //$telegram->setCommandConfig('date', ['google_api_key' => 'your_google_api_key_here']);
 
-    // Botan.io integration
-    //$telegram->enableBotan('your_botan_token');
-
     // Requests Limiter (tries to prevent reaching Telegram API limits)
     $telegram->enableLimiter();
 
-    // Handle telegram webhook request
-    $telegram->handle();
+    if ('cli' === PHP_SAPI) {
+        // Run cronjob selected commands
+        $telegram->runCommands($cronjob_commands);
+    } else {
+        // Botan.io integration [MUST BE DISABLED IF RUNNING WITH CRONJOB]
+        //$telegram->enableBotan('your_botan_token');
 
+        // Handle telegram updates request without MySQL
+        //$telegram->useGetUpdatesWithoutDatabase();
+        //$telegram->handleGetUpdates();
+        // Handle telegram webhook request
+        $telegram->handle();
+    }
 } catch (Longman\TelegramBot\Exception\TelegramException $e) {
     // Silence is golden!
     //echo $e;
@@ -78,6 +91,6 @@ try {
     Longman\TelegramBot\TelegramLog::error($e);
 } catch (Longman\TelegramBot\Exception\TelegramLogException $e) {
     // Silence is golden!
-    // Uncomment this to catch log initialisation errors
+    // Uncomment this to catch log initialization errors
     //echo $e;
 }

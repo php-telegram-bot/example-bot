@@ -38,9 +38,8 @@ Thanks to reading the main readme file, you should know what these do.
 - `composer.json` (Describes your project and it's dependencies)
 - `set.php` (Used to set the webhook)
 - `unset.php` (Used to unset the webhook)
-- `hook.php` (Used for the webhook method)
+- `hook.php` (Used for the webhook method & to execute commands via cron)
 - `getUpdatesCLI.php` (Used for the getUpdates method)
-- `cron.php` (Used to execute commands via cron)
 
 **Bot Manager**
 Using the bot manager makes life much easier, as all configuration goes into a single file, `manager.php`.
