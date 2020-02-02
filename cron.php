@@ -65,9 +65,6 @@ try {
     // e.g. Google geocode/timezone api key for /date command:
     //$telegram->setCommandConfig('date', ['google_api_key' => 'your_google_api_key_here']);
 
-    // Botan.io integration
-    //$telegram->enableBotan('your_botan_token');
-
     // Requests Limiter (tries to prevent reaching Telegram API limits)
     $telegram->enableLimiter();
 

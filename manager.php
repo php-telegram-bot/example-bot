@@ -70,11 +70,6 @@ try {
         //    'upload'   => __DIR__ . '/Upload',
         //],
 
-        // Botan.io integration
-        //'botan' => [
-        //    'token' => 'your_botan_token',
-        //],
-
         // Requests Limiter (tries to prevent reaching Telegram API limits)
         'limiter'      => ['enabled' => true],
     ]);
