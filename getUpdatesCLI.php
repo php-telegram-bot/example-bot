@@ -48,12 +48,18 @@ try {
     $telegram->enableMySql($mysql_credentials);
 
     // Logging (Error, Debug and Raw Updates)
-    //Longman\TelegramBot\TelegramLog::initErrorLog(__DIR__ . "/{$bot_username}_error.log");
-    //Longman\TelegramBot\TelegramLog::initDebugLog(__DIR__ . "/{$bot_username}_debug.log");
-    //Longman\TelegramBot\TelegramLog::initUpdateLog(__DIR__ . "/{$bot_username}_update.log");
-
-    // If you are using a custom Monolog instance for logging, use this instead of the above
-    //Longman\TelegramBot\TelegramLog::initialize($your_external_monolog_instance);
+    // https://github.com/php-telegram-bot/core/blob/master/doc/01-utils.md#logging
+    //
+    // (this example requires Monolog: composer require monolog/monolog)
+    //Longman\TelegramBot\TelegramLog::initialize(
+    //    new Monolog\Logger('telegram_bot', [
+    //        (new Monolog\Handler\StreamHandler(__DIR__ . "/{$bot_username}_debug.log", Logger::DEBUG))->setFormatter(new Monolog\Formatter\LineFormatter(null, null, true)),
+    //        (new Monolog\Handler\StreamHandler(__DIR__ . "/{$bot_username}_error.log", Logger::ERROR))->setFormatter(new Monolog\Formatter\LineFormatter(null, null, true)),
+    //    ]),
+    //    new Monolog\Logger('telegram_bot_updates', [
+    //        (new Monolog\Handler\StreamHandler(__DIR__ . "/{$bot_username}_update.log", Logger::INFO))->setFormatter(new Monolog\Formatter\LineFormatter('%message%' . PHP_EOL)),
+    //    ])
+    //);
 
     // Set custom Upload and Download paths
     //$telegram->setDownloadPath(__DIR__ . '/Download');
