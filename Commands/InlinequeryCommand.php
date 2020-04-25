@@ -35,7 +35,7 @@ class InlinequeryCommand extends SystemCommand
     /**
      * @var string
      */
-    protected $version = '1.1.1';
+    protected $version = '1.1.2';
 
     /**
      * Command execute method
@@ -78,8 +78,6 @@ class InlinequeryCommand extends SystemCommand
             }
         }
 
-        $data['results'] = '[' . implode(',', $results) . ']';
-
-        return Request::answerInlineQuery($data);
+        return $this->getInlineQuery()->answer($results, $data);
     }
 }
