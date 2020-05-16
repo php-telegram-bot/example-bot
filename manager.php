@@ -77,12 +77,12 @@ try {
     // Run the bot!
     $bot->run();
 
-} catch (Longman\TelegramBot\Exception\TelegramException $e) {
+} catch (PhpTelegramBot\Core\Exception\TelegramException $e) {
     // Silence is golden!
     //echo $e;
     // Log telegram errors
-    Longman\TelegramBot\TelegramLog::error($e);
-} catch (Longman\TelegramBot\Exception\TelegramLogException $e) {
+    PhpTelegramBot\Core\TelegramLog::error($e);
+} catch (PhpTelegramBot\Core\Exception\TelegramLogException $e) {
     // Silence is golden!
     // Uncomment this to catch log initialisation errors
     //echo $e;

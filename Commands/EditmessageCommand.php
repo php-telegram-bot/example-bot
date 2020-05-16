@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\UserCommands;
+namespace PhpTelegramBot\Core\Commands\UserCommands;
 
-use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Request;
+use PhpTelegramBot\Core\Commands\UserCommand;
+use PhpTelegramBot\Core\Request;
 
 /**
  * User "/editmessage" command
@@ -43,8 +43,8 @@ class EditmessageCommand extends UserCommand
     /**
      * Command execute method
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return \PhpTelegramBot\Core\Entities\ServerResponse
+     * @throws \PhpTelegramBot\Core\Exception\TelegramException
      */
     public function execute()
     {

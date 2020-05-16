@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\SystemCommands;
+namespace PhpTelegramBot\Core\Commands\SystemCommands;
 
-use Longman\TelegramBot\Commands\SystemCommand;
+use PhpTelegramBot\Core\Commands\SystemCommand;
 
 /**
  * New chat title command
@@ -37,8 +37,8 @@ class NewchattitleCommand extends SystemCommand
     /**
      * Command execute method
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return \PhpTelegramBot\Core\Entities\ServerResponse
+     * @throws \PhpTelegramBot\Core\Exception\TelegramException
      */
     public function execute()
     {

@@ -8,14 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\UserCommands;
+namespace PhpTelegramBot\Core\Commands\UserCommands;
 
-use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Conversation;
-use Longman\TelegramBot\Entities\Keyboard;
-use Longman\TelegramBot\Entities\KeyboardButton;
-use Longman\TelegramBot\Entities\PhotoSize;
-use Longman\TelegramBot\Request;
+use PhpTelegramBot\Core\Commands\UserCommand;
+use PhpTelegramBot\Core\Conversation;
+use PhpTelegramBot\Core\Entities\Keyboard;
+use PhpTelegramBot\Core\Entities\KeyboardButton;
+use PhpTelegramBot\Core\Entities\PhotoSize;
+use PhpTelegramBot\Core\Request;
 
 /**
  * User "/survey" command
@@ -57,15 +57,15 @@ class SurveyCommand extends UserCommand
     /**
      * Conversation Object
      *
-     * @var \Longman\TelegramBot\Conversation
+     * @var \PhpTelegramBot\Core\Conversation
      */
     protected $conversation;
 
     /**
      * Command execute method
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return \PhpTelegramBot\Core\Entities\ServerResponse
+     * @throws \PhpTelegramBot\Core\Exception\TelegramException
      */
     public function execute()
     {

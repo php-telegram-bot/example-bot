@@ -8,11 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\SystemCommands;
+namespace PhpTelegramBot\Core\Commands\SystemCommands;
 
-use Longman\TelegramBot\Commands\SystemCommand;
-use Longman\TelegramBot\Conversation;
-use Longman\TelegramBot\Request;
+use PhpTelegramBot\Core\Commands\SystemCommand;
+use PhpTelegramBot\Core\Conversation;
+use PhpTelegramBot\Core\Request;
 
 /**
  * Generic message command
@@ -44,8 +44,8 @@ class GenericmessageCommand extends SystemCommand
     /**
      * Command execute method if MySQL is required but not available
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return \PhpTelegramBot\Core\Entities\ServerResponse
+     * @throws \PhpTelegramBot\Core\Exception\TelegramException
      */
     public function executeNoDb()
     {
@@ -56,8 +56,8 @@ class GenericmessageCommand extends SystemCommand
     /**
      * Command execute method
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return \PhpTelegramBot\Core\Entities\ServerResponse
+     * @throws \PhpTelegramBot\Core\Exception\TelegramException
      */
     public function execute()
     {
