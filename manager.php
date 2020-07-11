@@ -39,8 +39,10 @@ try {
         //    ],
         //    // Here you can set some command specific parameters
         //    'configs' => [
-        //        // e.g. Google geocode/timezone api key for /date command
+        //        - Google geocode/timezone API key for /date command
         //        'date' => ['google_api_key' => 'your_google_api_key_here'],
+        //        - Payment Provider Token for /payment command.
+        //        'payment' => ['payment_provider_token' => 'your_payment_provider_token_here'],
         //    ],
         //],
 
