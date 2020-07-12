@@ -1,5 +1,16 @@
 #!/usr/bin/env php
 <?php
+
+/**
+ * This file is part of the PHP Telegram Bot example-bot package.
+ * https://github.com/php-telegram-bot/example-bot/
+ *
+ * (c) PHP Telegram Bot Team
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 /**
  * README
  * This configuration file is intended to run the bot with the getUpdates method.

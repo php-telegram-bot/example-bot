@@ -1,13 +1,13 @@
 <?php
+
 /**
- * This file is part of the TelegramBot package.
+ * This file is part of the PHP Telegram Bot example-bot package.
+ * https://github.com/php-telegram-bot/example-bot/
  *
- * (c) Avtandil Kikabidze aka LONGMAN <akalongman@gmail.com>
+ * (c) PHP Telegram Bot Team
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
- * Written by Marco Boretto <marco.bore@gmail.com>
  */
 
 namespace Longman\TelegramBot\Commands\UserCommands;
