@@ -1,12 +1,12 @@
 # PHP Telegram Bot Example
-An A-Z example of Telegram bot using the [PHP Telegram Bot][1] library.
+An A-Z example of Telegram bot using the [PHP Telegram Bot][core-github] library.
 
 This repository aims to demonstrate the usage of all the features offered by the PHP Telegram Bot library and as such contains all example commands.
-Also, it gives an example setup for both the standard usage and using the [PHP Telegram Bot Manager][3] 
+Also, it gives an example setup for both the standard usage and using the [PHP Telegram Bot Manager][bot-manager-github] 
 
 **:exclamation: Important!**
 - Most of the commands found here are **not to be used exactly as they are**, they are mere demonstrations of features! They are provided as-is and any **extra security measures need to be added by you**, the developer.
-- Before getting started with this project, make sure you have read the official [readme][2] to understand how the PHP Telegram Bot library works and what is required to run a Telegram bot.
+- Before getting started with this project, make sure you have read the official [readme][core-readme-github] to understand how the PHP Telegram Bot library works and what is required to run a Telegram bot.
 
 Let's get started then! :smiley:
 
@@ -28,14 +28,16 @@ Unzip the files to the root of your project folder.
 
 ## 1. Making it yours
 
-Now you can choose what installation you would like, either the default one or using the [Bot Manager][3] project.
+Now you can choose what installation you would like, either the default one or using the [Bot Manager][bot-manager-github] project.
 Depending on which one you choose, you can delete the files that are not required.
 
 ---
 
+First of all, you need to rename `config.example.php` to `config.php` and then replace all necessary values with those of your project.
+
 **Default**
-Next, edit the following files, replacing all necessary values with those of your project.
-Thanks to reading the main readme file, you should know what these do.
+Some of these files require extra configurations to be added. Check `hook.php` how they are loaded.
+Thanks to reading the main readme file, you should know what these files do.
 
 - `composer.json` (Describes your project and it's dependencies)
 - `set.php` (Used to set the webhook)
@@ -47,7 +49,7 @@ Thanks to reading the main readme file, you should know what these do.
 **Bot Manager**
 Using the bot manager makes life much easier, as all configuration goes into a single file, `manager.php`.
 
-If you decide to use the Bot Manager, be sure to [read all about it][4] and change the `require` block in the `composer.json` file:
+If you decide to use the Bot Manager, be sure to [read all about it][bot-manager-readme-github] and change the `require` block in the `composer.json` file:
 ```json
 "require": {
     "php-telegram-bot/telegram-bot-manager": "*"
@@ -61,15 +63,15 @@ Then, edit the following files, replacing all necessary values with those of you
 
 ---
 
-Now you can install all dependencies using [composer][5]:
+Now you can install all dependencies using [composer]:
 ```bash
 $ composer install
 ```
 
 ## To be continued!
 
-[1]: https://github.com/php-telegram-bot/core "php-telegram-bot/core"
-[2]: https://github.com/php-telegram-bot/core#readme "PHP Telegram Bot - README"
-[3]: https://github.com/php-telegram-bot/telegram-bot-manager "php-telegram-bot/telegram-bot-manager"
-[4]: https://github.com/php-telegram-bot/telegram-bot-manager#readme "PHP Telegram Bot Manager - README"
-[5]: https://getcomposer.org/ "Composer"
+[core-github]: https://github.com/php-telegram-bot/core "php-telegram-bot/core"
+[core-readme-github]: https://github.com/php-telegram-bot/core#readme "PHP Telegram Bot - README"
+[bot-manager-github]: https://github.com/php-telegram-bot/telegram-bot-manager "php-telegram-bot/telegram-bot-manager"
+[bot-manager-readme-github]: https://github.com/php-telegram-bot/telegram-bot-manager#readme "PHP Telegram Bot Manager - README"
+[composer]: https://getcomposer.org/ "Composer"
