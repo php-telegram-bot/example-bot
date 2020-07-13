@@ -14,6 +14,8 @@ namespace Longman\TelegramBot\Commands\UserCommands;
 
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Entities\Keyboard;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
 /**
@@ -46,10 +48,10 @@ class ForcereplyCommand extends UserCommand
     /**
      * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
+     * @throws TelegramException
      */
-    public function execute(): \Longman\TelegramBot\Entities\ServerResponse
+    public function execute(): ServerResponse
     {
         $chat_id = $this->getMessage()->getChat()->getId();
 

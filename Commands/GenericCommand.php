@@ -13,6 +13,8 @@
 namespace Longman\TelegramBot\Commands\SystemCommands;
 
 use Longman\TelegramBot\Commands\SystemCommand;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
 /**
@@ -40,10 +42,10 @@ class GenericCommand extends SystemCommand
     /**
      * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
+     * @throws TelegramException
      */
-    public function execute(): \Longman\TelegramBot\Entities\ServerResponse
+    public function execute(): ServerResponse
     {
         $message = $this->getMessage();
 
