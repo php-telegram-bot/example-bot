@@ -10,6 +10,16 @@
  * file that was distributed with this source code.
  */
 
+/**
+ * User "/date" command
+ *
+ * Shows the date and time of the location passed as the parameter.
+ *
+ * A Google API key is required for this command!
+ * You can be set in your config.php file:
+ * ['commands']['configs']['date'] => ['google_api_key' => 'your_google_api_key_here']
+ */
+
 namespace Longman\TelegramBot\Commands\UserCommands;
 
 use GuzzleHttp\Client;
@@ -18,14 +28,6 @@ use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\TelegramLog;
 
-/**
- * User "/date" command
- *
- * Shows the date and time of the location passed as the parameter.
- *
- * A Google API key is required for this command, and it can be set in your hook file:
- * $telegram->setCommandConfig('date', ['google_api_key' => 'your_api_key']);
- */
 class DateCommand extends UserCommand
 {
     /**
@@ -46,12 +48,12 @@ class DateCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '1.4.1';
+    protected $version = '1.5.0';
 
     /**
      * Guzzle Client object
      *
-     * @var \GuzzleHttp\Client
+     * @var Client
      */
     private $client;
 
@@ -83,7 +85,7 @@ class DateCommand extends UserCommand
      *
      * @return array
      */
-    private function getCoordinates($location)
+    private function getCoordinates($location): array
     {
         $path  = 'geocode/json';
         $query = ['address' => urlencode($location)];
@@ -120,8 +122,9 @@ class DateCommand extends UserCommand
      * @param string $lng
      *
      * @return array
+     * @throws \Exception
      */
-    private function getDate($lat, $lng)
+    private function getDate($lat, $lng): array
     {
         $path = 'timezone/json';
 
@@ -161,7 +164,7 @@ class DateCommand extends UserCommand
      *
      * @return array
      */
-    private function validateResponseData($data)
+    private function validateResponseData($data): array
     {
         if (empty($data)) {
             return [];
@@ -185,20 +188,20 @@ class DateCommand extends UserCommand
      * @param string $location
      *
      * @return string
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @throws \Exception
      */
-    private function getFormattedDate($location)
+    private function getFormattedDate($location): string
     {
         if ($location === null || $location === '') {
             return 'The time in nowhere is never';
         }
 
-        list($lat, $lng) = $this->getCoordinates($location);
+        [$lat, $lng] = $this->getCoordinates($location);
         if (empty($lat) || empty($lng)) {
             return 'It seems that in "' . $location . '" they do not have a concept of time.';
         }
 
-        list($local_time, $timezone_id) = $this->getDate($lat, $lng);
+        [$local_time, $timezone_id] = $this->getDate($lat, $lng);
 
         $date_utc = new \DateTimeImmutable(gmdate('Y-m-d H:i:s', $local_time), new \DateTimeZone($timezone_id));
 
@@ -206,14 +209,14 @@ class DateCommand extends UserCommand
     }
 
     /**
-     * Command execute method
+     * Main command execution
      *
      * @return \Longman\TelegramBot\Entities\ServerResponse
      * @throws \Longman\TelegramBot\Exception\TelegramException
      */
-    public function execute()
+    public function execute(): \Longman\TelegramBot\Entities\ServerResponse
     {
-        //First we set up the necessary member variables.
+//First we set up the necessary member variables.
         $this->client = new Client(['base_uri' => $this->google_api_base_uri]);
         if (($this->google_api_key = trim($this->getConfig('google_api_key'))) === '') {
             $this->google_api_key = null;

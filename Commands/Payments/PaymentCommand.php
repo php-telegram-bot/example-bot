@@ -58,9 +58,11 @@ class PaymentCommand extends UserCommand
     protected $version = '0.1.0';
 
     /**
-     * @inheritDoc
+     * Main command execution
+     *
+     * @return ServerResponse
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
         // Who to send this invoice to. (Use the current user.)
         $chat_id = $this->getMessage()->getFrom()->getId();
@@ -81,7 +83,7 @@ class PaymentCommand extends UserCommand
         $need_shipping_address = false;
 
         // If you have flexible pricing, depending on the shipping method chosen, set this to true.
-        // You will also require the `ShippingqueryCommand.php` file and adapt it.
+        // You will also need to copy and adapt the `ShippingqueryCommand.php` file.
         $is_flexible = false;
 
         // Send the actual invoice!
@@ -101,7 +103,7 @@ class PaymentCommand extends UserCommand
     }
 
     /**
-     * Send "Thank you" message to user who paid.
+     * Send "Thank you" message to user who paid
      *
      * You will need to add some code to your custom `GenericmessageCommand::execute()` method.
      * Check the `GenericmessageCommand.php` file included in this folder.
@@ -112,7 +114,7 @@ class PaymentCommand extends UserCommand
      * @return ServerResponse
      * @throws TelegramException
      */
-    public static function handleSuccessfulPayment($payment, $user_id)
+    public static function handleSuccessfulPayment($payment, $user_id): ServerResponse
     {
         // Send a message to the user after they have completed the payment.
         return Request::sendMessage([

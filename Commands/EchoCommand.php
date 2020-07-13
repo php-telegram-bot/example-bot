@@ -10,16 +10,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\UserCommands;
-
-use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Request;
-
 /**
  * User "/echo" command
  *
  * Simply echo the input back to the user.
  */
+
+namespace Longman\TelegramBot\Commands\UserCommands;
+
+use Longman\TelegramBot\Commands\UserCommand;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Exception\TelegramException;
+
 class EchoCommand extends UserCommand
 {
     /**
@@ -40,29 +42,23 @@ class EchoCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '1.1.0';
+    protected $version = '1.2.0';
 
     /**
-     * Command execute method
+     * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
+     * @throws TelegramException
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
         $message = $this->getMessage();
-        $chat_id = $message->getChat()->getId();
-        $text    = trim($message->getText(true));
+        $text    = $message->getText(true);
 
         if ($text === '') {
-            $text = 'Command usage: ' . $this->getUsage();
+            return $this->replyToChat('Command usage: ' . $this->getUsage());
         }
 
-        $data = [
-            'chat_id' => $chat_id,
-            'text'    => $text,
-        ];
-
-        return Request::sendMessage($data);
+        return $this->replyToChat($text);
     }
 }

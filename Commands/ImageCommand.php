@@ -10,16 +10,19 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\UserCommands;
-
-use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Request;
-
 /**
  * User "/image" command
  *
- * Fetch any uploaded image from the Uploads path.
+ * Randomly fetch any uploaded image from the Uploads path and send it to the user.
  */
+
+namespace Longman\TelegramBot\Commands\UserCommands;
+
+use Longman\TelegramBot\Commands\UserCommand;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Exception\TelegramException;
+use Longman\TelegramBot\Request;
+
 class ImageCommand extends UserCommand
 {
     /**
@@ -30,7 +33,7 @@ class ImageCommand extends UserCommand
     /**
      * @var string
      */
-    protected $description = 'Send Image';
+    protected $description = 'Randomly fetch any uploaded image';
 
     /**
      * @var string
@@ -40,42 +43,43 @@ class ImageCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '1.1.0';
+    protected $version = '1.2.0';
 
     /**
-     * Command execute method
+     * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
+     * @throws TelegramException
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
         $message = $this->getMessage();
 
         // Use any extra parameters as the caption text.
         $caption = trim($message->getText(true));
 
-        // Get a random picture from the telegram->getUploadPath() directory.
-        $random_image = $this->GetRandomImagePath($this->telegram->getUploadPath());
+        // Make sure the Upload path has been defined and exists.
+        $upload_path = $this->telegram->getUploadPath();
+        if (!is_dir($upload_path)) {
+            return $this->replyToChat('Upload path has not been defined or does not exist.');
+        }
 
-        $data = [
-            'chat_id' => $message->getChat()->getId(),
-        ];
-
-        if (!$random_image) {
-            $data['text'] = 'No image found!';
-            return Request::sendMessage($data);
+        // Get a random picture from the Upload path.
+        $random_image = $this->getRandomImagePath($upload_path);
+        if ('' === $random_image) {
+            return $this->replyToChat('No image found!');
         }
 
         // If no caption is set, use the filename.
-        if ($caption === '') {
+        if ('' === $caption) {
             $caption = basename($random_image);
         }
 
-        $data['caption'] = $caption;
-        $data['photo']   = Request::encodeFile($random_image);
-
-        return Request::sendPhoto($data);
+        return Request::sendPhoto([
+            'chat_id' => $message->getFrom()->getId(),
+            'caption' => $caption,
+            'photo'   => $random_image,
+        ]);
     }
 
     /**
@@ -85,10 +89,18 @@ class ImageCommand extends UserCommand
      *
      * @return string
      */
-    private function GetRandomImagePath($dir)
+    private function getRandomImagePath($dir): string
     {
-        // Slice off the . and .. "directories"
-        if ($image_list = array_diff(scandir($dir), array('..', '.'))) {
+        if (!is_dir($dir)) {
+            return '';
+        }
+
+        // Filter the file list to only return images.
+        $image_list = array_filter(scandir($dir), function ($file) {
+            $extension = pathinfo($file, PATHINFO_EXTENSION);
+            return in_array($extension, ['png', 'jpg', 'jpeg', 'gif']);
+        });
+        if (!empty($image_list)) {
             shuffle($image_list);
             return $dir . '/' . $image_list[0];
         }

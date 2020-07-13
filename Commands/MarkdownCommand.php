@@ -10,17 +10,19 @@
  * file that was distributed with this source code.
  */
 
+/**
+ * User "/markdown" command
+ *
+ * Print some text formatted with markdown.
+ */
+
 namespace Longman\TelegramBot\Commands\UserCommands;
 
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Entities\ReplyKeyboardMarkup;
-use Longman\TelegramBot\Request;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Exception\TelegramException;
 
-/**
- * User "/markdown" command
- *
- * Print some markdown text.
- */
 class MarkdownCommand extends UserCommand
 {
     /**
@@ -31,7 +33,7 @@ class MarkdownCommand extends UserCommand
     /**
      * @var string
      */
-    protected $description = 'Print Markdown text';
+    protected $description = 'Print Markdown Text';
 
     /**
      * @var string
@@ -41,31 +43,26 @@ class MarkdownCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '1.0.1';
+    protected $version = '1.1.0';
 
     /**
-     * Command execute method
+     * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
+     * @throws TelegramException
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
-        $message = $this->getMessage();
-        $chat_id = $message->getChat()->getId();
+        return $this->replyToChat('
+*bold* _italic_ `inline fixed width code`
 
-        $data = [
-            'chat_id'    => $chat_id,
-            'parse_mode' => 'MARKDOWN',
-            'text'       => '*bold* _italic_ `inline fixed width code`
 ```
 preformatted code block
 code block
 ```
-[Best Telegram bot api!!](https://github.com/php-telegram-bot/core)
-',
-        ];
 
-        return Request::sendMessage($data);
+[Best Telegram bot api!!](https://github.com/php-telegram-bot/core)', [
+            'parse_mode' => 'markdown',
+        ]);
     }
 }

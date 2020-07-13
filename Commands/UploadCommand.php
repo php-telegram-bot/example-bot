@@ -10,50 +10,78 @@
  * file that was distributed with this source code.
  */
 
+/**
+ * User "/upload" command
+ *
+ * A command that allows users to upload files to your bot, saving them to the bot's "Download" folder.
+ *
+ * IMPORTANT NOTICE
+ * This is a "demo", do NOT use this as-is in your bot!
+ * Know the security implications of allowing users to upload arbitrary files to your server!
+ */
+
 namespace Longman\TelegramBot\Commands\UserCommands;
 
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Conversation;
 use Longman\TelegramBot\Entities\Keyboard;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
-/**
- * User "/upload" command
- *
- * A command that allows users to upload files to your bot, saving them to the bot's "Download" folder.
- */
 class UploadCommand extends UserCommand
 {
-    /**#@+
-     * {@inheritdoc}
+    /**
+     * @var string
      */
     protected $name = 'upload';
-    protected $description = 'Upload and save files';
-    protected $usage = '/upload';
-    protected $version = '0.1.0';
-    protected $need_mysql = true;
-    /**#@-*/
 
     /**
-     * {@inheritdoc}
+     * @var string
      */
-    public function execute()
+    protected $description = 'Upload and save files';
+
+    /**
+     * @var string
+     */
+    protected $usage = '/upload';
+
+    /**
+     * @var string
+     */
+    protected $version = '0.2.0';
+
+    /**
+     * @var bool
+     */
+    protected $need_mysql = true;
+
+    /**
+     * Main command execution
+     *
+     * @return ServerResponse
+     * @throws TelegramException
+     */
+    public function execute(): ServerResponse
     {
         $message = $this->getMessage();
         $chat    = $message->getChat();
         $chat_id = $chat->getId();
         $user_id = $message->getFrom()->getId();
 
-        // Preparing Response
-        $data = [
-            'chat_id'      => $chat_id,
-            'reply_markup' => Keyboard::remove(),
-        ];
+        // Make sure the Download path has been defined and exists
+        $download_path = $this->telegram->getDownloadPath();
+        if (!is_dir($download_path)) {
+            return $this->replyToChat('Download path has not been defined or does not exist.');
+        }
+
+        // Initialise the data array for the response
+        $data = ['chat_id' => $chat_id];
 
         if ($chat->isGroupChat() || $chat->isSuperGroup()) {
             // Reply to message id is applied by default
             $data['reply_to_message_id'] = $message->getMessageId();
-            // Force reply is applied by default to so can work with privacy on
+            // Force reply is applied by default to work with privacy on
             $data['reply_markup'] = Keyboard::forceReply(['selective' => true]);
         }
 
@@ -70,7 +98,7 @@ class UploadCommand extends UserCommand
             $file_id = $doc->getFileId();
             $file    = Request::getFile(['file_id' => $file_id]);
             if ($file->isOk() && Request::downloadFile($file->getResult())) {
-                $data['text'] = $message_type . ' file is located at: ' . $this->telegram->getDownloadPath() . '/' . $file->getResult()->getFilePath();
+                $data['text'] = $message_type . ' file is located at: ' . $download_path . '/' . $file->getResult()->getFilePath();
             } else {
                 $data['text'] = 'Failed to download.';
             }

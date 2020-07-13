@@ -48,9 +48,11 @@ return [
         ],
         // Here you can set any command-specific parameters
         'configs' => [
-            // - Google geocode/timezone API key for /date command
+            // - Google geocode/timezone API key for /date command (see DateCommand.php)
             // 'date'    => ['google_api_key' => 'your_google_api_key_here'],
-            // - Payment Provider Token for /payment command.
+            // - OpenWeatherMap.org API key for /weather command (see WeatherCommand.php)
+            // 'weather' => ['owm_api_key' => 'your_owm_api_key_here'],
+            // - Payment Provider Token for /payment command (see Payments/PaymentCommand.php)
             // 'payment' => ['payment_provider_token' => 'your_payment_provider_token_here'],
         ],
     ],

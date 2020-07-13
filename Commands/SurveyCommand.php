@@ -10,20 +10,22 @@
  * file that was distributed with this source code.
  */
 
+/**
+ * User "/survey" command
+ *
+ * Example of the Conversation functionality in form of a simple survey.
+ */
+
 namespace Longman\TelegramBot\Commands\UserCommands;
 
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Conversation;
 use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Entities\KeyboardButton;
-use Longman\TelegramBot\Entities\PhotoSize;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
-/**
- * User "/survey" command
- *
- * Command that demonstrated the Conversation funtionality in form of a simple survey.
- */
 class SurveyCommand extends UserCommand
 {
     /**
@@ -44,7 +46,7 @@ class SurveyCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '0.3.0';
+    protected $version = '0.4.0';
 
     /**
      * @var bool
@@ -59,17 +61,17 @@ class SurveyCommand extends UserCommand
     /**
      * Conversation Object
      *
-     * @var \Longman\TelegramBot\Conversation
+     * @var Conversation
      */
     protected $conversation;
 
     /**
-     * Command execute method
+     * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
+     * @throws TelegramException
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
         $message = $this->getMessage();
 
@@ -79,42 +81,39 @@ class SurveyCommand extends UserCommand
         $chat_id = $chat->getId();
         $user_id = $user->getId();
 
-        //Preparing Response
+        // Preparing response
         $data = [
-            'chat_id' => $chat_id,
+            'chat_id'      => $chat_id,
+            // Remove any keyboard by default
+            'reply_markup' => Keyboard::remove(['selective' => true]),
         ];
 
         if ($chat->isGroupChat() || $chat->isSuperGroup()) {
-            //reply to message id is applied by default
-            //Force reply is applied by default so it can work with privacy on
+            // Force reply is applied by default so it can work with privacy on
             $data['reply_markup'] = Keyboard::forceReply(['selective' => true]);
         }
 
-        //Conversation start
+        // Conversation start
         $this->conversation = new Conversation($user_id, $chat_id, $this->getName());
 
+        // Load any existing notes from this conversation
         $notes = &$this->conversation->notes;
         !is_array($notes) && $notes = [];
 
-        //cache data from the tracking session if any
-        $state = 0;
-        if (isset($notes['state'])) {
-            $state = $notes['state'];
-        }
+        // Load the current state of the conversation
+        $state = $notes['state'] ?? 0;
 
         $result = Request::emptyResponse();
 
-        //State machine
-        //Entrypoint of the machine state if given by the track
-        //Every time a step is achieved the track is updated
+        // State machine
+        // Every time a step is achieved the state is updated
         switch ($state) {
             case 0:
                 if ($text === '') {
                     $notes['state'] = 0;
                     $this->conversation->update();
 
-                    $data['text']         = 'Type your name:';
-                    $data['reply_markup'] = Keyboard::remove(['selective' => true]);
+                    $data['text'] = 'Type your name:';
 
                     $result = Request::sendMessage($data);
                     break;
@@ -123,7 +122,7 @@ class SurveyCommand extends UserCommand
                 $notes['name'] = $text;
                 $text          = '';
 
-            // no break
+            // No break!
             case 1:
                 if ($text === '') {
                     $notes['state'] = 1;
@@ -138,7 +137,7 @@ class SurveyCommand extends UserCommand
                 $notes['surname'] = $text;
                 $text             = '';
 
-            // no break
+            // No break!
             case 2:
                 if ($text === '' || !is_numeric($text)) {
                     $notes['state'] = 2;
@@ -146,7 +145,7 @@ class SurveyCommand extends UserCommand
 
                     $data['text'] = 'Type your age:';
                     if ($text !== '') {
-                        $data['text'] = 'Type your age, must be a number:';
+                        $data['text'] = 'Age must be a number';
                     }
 
                     $result = Request::sendMessage($data);
@@ -156,7 +155,7 @@ class SurveyCommand extends UserCommand
                 $notes['age'] = $text;
                 $text         = '';
 
-            // no break
+            // No break!
             case 3:
                 if ($text === '' || !in_array($text, ['M', 'F'], true)) {
                     $notes['state'] = 3;
@@ -169,7 +168,7 @@ class SurveyCommand extends UserCommand
 
                     $data['text'] = 'Select your gender:';
                     if ($text !== '') {
-                        $data['text'] = 'Select your gender, choose a keyboard option:';
+                        $data['text'] = 'Choose a keyboard option to select your gender';
                     }
 
                     $result = Request::sendMessage($data);
@@ -178,7 +177,7 @@ class SurveyCommand extends UserCommand
 
                 $notes['gender'] = $text;
 
-            // no break
+            // No break!
             case 4:
                 if ($message->getLocation() === null) {
                     $notes['state'] = 4;
@@ -200,7 +199,7 @@ class SurveyCommand extends UserCommand
                 $notes['longitude'] = $message->getLocation()->getLongitude();
                 $notes['latitude']  = $message->getLocation()->getLatitude();
 
-            // no break
+            // No break!
             case 5:
                 if ($message->getPhoto() === null) {
                     $notes['state'] = 5;
@@ -212,11 +211,10 @@ class SurveyCommand extends UserCommand
                     break;
                 }
 
-                /** @var PhotoSize $photo */
                 $photo             = $message->getPhoto()[0];
                 $notes['photo_id'] = $photo->getFileId();
 
-            // no break
+            // No break!
             case 6:
                 if ($message->getContact() === null) {
                     $notes['state'] = 6;
@@ -237,7 +235,7 @@ class SurveyCommand extends UserCommand
 
                 $notes['phone_number'] = $message->getContact()->getPhoneNumber();
 
-            // no break
+            // No break!
             case 7:
                 $this->conversation->update();
                 $out_text = '/Survey result:' . PHP_EOL;
@@ -246,9 +244,9 @@ class SurveyCommand extends UserCommand
                     $out_text .= PHP_EOL . ucfirst($k) . ': ' . $v;
                 }
 
-                $data['photo']        = $notes['photo_id'];
-                $data['reply_markup'] = Keyboard::remove(['selective' => true]);
-                $data['caption']      = $out_text;
+                $data['photo']   = $notes['photo_id'];
+                $data['caption'] = $out_text;
+
                 $this->conversation->stop();
 
                 $result = Request::sendPhoto($data);

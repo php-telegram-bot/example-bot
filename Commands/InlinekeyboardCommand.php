@@ -12,15 +12,19 @@
 
 namespace Longman\TelegramBot\Commands\UserCommands;
 
-use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Entities\InlineKeyboard;
-use Longman\TelegramBot\Request;
-
 /**
  * User "/inlinekeyboard" command
  *
  * Display an inline keyboard with a few buttons.
+ *
+ * This command requires CallbackqueryCommand to work!
  */
+
+use Longman\TelegramBot\Commands\UserCommand;
+use Longman\TelegramBot\Entities\InlineKeyboard;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Exception\TelegramException;
+
 class InlinekeyboardCommand extends UserCommand
 {
     /**
@@ -41,34 +45,26 @@ class InlinekeyboardCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '0.1.0';
+    protected $version = '0.2.0';
 
     /**
-     * Command execute method
+     * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
+     * @throws TelegramException
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
-        $chat_id = $this->getMessage()->getChat()->getId();
-
-        $switch_element = mt_rand(0, 9) < 5 ? 'true' : 'false';
-
         $inline_keyboard = new InlineKeyboard([
-            ['text' => 'inline', 'switch_inline_query' => $switch_element],
-            ['text' => 'inline current chat', 'switch_inline_query_current_chat' => $switch_element],
+            ['text' => 'Inline Query (current chat)', 'switch_inline_query_current_chat' => 'inline query...'],
+            ['text' => 'Inline Query (other chat)', 'switch_inline_query' => 'inline query...'],
         ], [
-            ['text' => 'callback', 'callback_data' => 'identifier'],
-            ['text' => 'open url', 'url' => 'https://github.com/php-telegram-bot/core'],
+            ['text' => 'Callback', 'callback_data' => 'identifier'],
+            ['text' => 'Open URL', 'url' => 'https://github.com/php-telegram-bot/example-bot'],
         ]);
 
-        $data = [
-            'chat_id'      => $chat_id,
-            'text'         => 'inline keyboard',
+        return $this->replyToChat('Inline Keyboard', [
             'reply_markup' => $inline_keyboard,
-        ];
-
-        return Request::sendMessage($data);
+        ]);
     }
 }

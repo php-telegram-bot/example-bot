@@ -10,19 +10,22 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\UserCommands;
-
-use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Entities\File;
-use Longman\TelegramBot\Entities\PhotoSize;
-use Longman\TelegramBot\Entities\UserProfilePhotos;
-use Longman\TelegramBot\Request;
-
 /**
  * User "/whoami" command
  *
  * Simple command that returns info about the current user.
  */
+
+namespace Longman\TelegramBot\Commands\UserCommands;
+
+use Longman\TelegramBot\ChatAction;
+use Longman\TelegramBot\Commands\UserCommand;
+use Longman\TelegramBot\Entities\File;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Entities\UserProfilePhotos;
+use Longman\TelegramBot\Exception\TelegramException;
+use Longman\TelegramBot\Request;
+
 class WhoamiCommand extends UserCommand
 {
     /**
@@ -43,7 +46,7 @@ class WhoamiCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '1.1.0';
+    protected $version = '1.2.0';
 
     /**
      * @var bool
@@ -51,12 +54,12 @@ class WhoamiCommand extends UserCommand
     protected $private_only = true;
 
     /**
-     * Command execute method
+     * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
+     * @throws TelegramException
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
         $message = $this->getMessage();
 
@@ -70,10 +73,10 @@ class WhoamiCommand extends UserCommand
             'reply_to_message_id' => $message_id,
         ];
 
-        //Send chat action
+        // Send chat action "typing..."
         Request::sendChatAction([
             'chat_id' => $chat_id,
-            'action'  => 'typing',
+            'action'  => ChatAction::TYPING,
         ]);
 
         $caption = sprintf(
@@ -86,26 +89,25 @@ class WhoamiCommand extends UserCommand
             $from->getUsername()
         );
 
-        //Fetch user profile photo
-        $limit    = 10;
-        $offset   = null;
-        $response = Request::getUserProfilePhotos(
-            [
-                'user_id' => $user_id,
-                'limit'   => $limit,
-                'offset'  => $offset,
-            ]
-        );
+        // Fetch user profile photo
+        $limit  = 10;
+        $offset = null;
 
-        if ($response->isOk()) {
+        $user_profile_photos_response = Request::getUserProfilePhotos([
+            'user_id' => $user_id,
+            'limit'   => $limit,
+            'offset'  => $offset,
+        ]);
+
+        if ($user_profile_photos_response->isOk()) {
             /** @var UserProfilePhotos $user_profile_photos */
-            $user_profile_photos = $response->getResult();
+            $user_profile_photos = $user_profile_photos_response->getResult();
 
             if ($user_profile_photos->getTotalCount() > 0) {
-                $photos = $user_profile_photos->getPhotos();
-
-                /** @var PhotoSize $photo */
-                $photo   = $photos[0][2];
+                $photos  = $user_profile_photos->getPhotos();
+                // $photo   = $photos[0][2];
+                // Get the best quality of the first profile photo found
+                $photo   = end($photos[0]);
                 $file_id = $photo->getFileId();
 
                 $data['photo']   = $file_id;
@@ -113,11 +115,11 @@ class WhoamiCommand extends UserCommand
 
                 $result = Request::sendPhoto($data);
 
-                //Download the photo after send message response to speedup response
-                $response2 = Request::getFile(['file_id' => $file_id]);
-                if ($response2->isOk()) {
+                // Download the photo after sending the message
+                $photo_file_response = Request::getFile(['file_id' => $file_id]);
+                if ($photo_file_response->isOk()) {
                     /** @var File $photo_file */
-                    $photo_file = $response2->getResult();
+                    $photo_file = $photo_file_response->getResult();
                     Request::downloadFile($photo_file);
                 }
 
@@ -125,7 +127,7 @@ class WhoamiCommand extends UserCommand
             }
         }
 
-        //No Photo just send text
+        // No Photo just send text
         $data['text'] = $caption;
 
         return Request::sendMessage($data);

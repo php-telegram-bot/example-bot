@@ -19,6 +19,7 @@
 namespace Longman\TelegramBot\Commands\SystemCommands;
 
 use Longman\TelegramBot\Commands\SystemCommand;
+use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Request;
 
 class GenericmessageCommand extends SystemCommand
@@ -39,14 +40,16 @@ class GenericmessageCommand extends SystemCommand
     protected $version = '0.1.0';
 
     /**
-     * @inheritDoc
+     * Main command execution
+     *
+     * @return ServerResponse
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
         $message = $this->getMessage();
         $user_id = $message->getFrom()->getId();
 
-        // Handle successful payment.
+        // Handle successful payment
         if ($payment = $message->getSuccessfulPayment()) {
             return PaymentCommand::handleSuccessfulPayment($payment, $user_id);
         }

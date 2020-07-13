@@ -10,15 +10,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\SystemCommands;
-
-use Longman\TelegramBot\Commands\SystemCommand;
-
 /**
  * Chosen inline result command
  *
  * Gets executed when an item from an inline query is selected.
  */
+
+namespace Longman\TelegramBot\Commands\SystemCommands;
+
+use Longman\TelegramBot\Commands\SystemCommand;
+use Longman\TelegramBot\Entities\ServerResponse;
+
 class ChoseninlineresultCommand extends SystemCommand
 {
     /**
@@ -29,24 +31,23 @@ class ChoseninlineresultCommand extends SystemCommand
     /**
      * @var string
      */
-    protected $description = 'Chosen result query';
+    protected $description = 'Handle the chosen inline result';
 
     /**
      * @var string
      */
-    protected $version = '1.1.1';
+    protected $version = '1.2.0';
 
     /**
-     * Command execute method
+     * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
-        //Information about chosen result is returned
-        //$inline_query = $this->getChosenInlineResult();
-        //$query        = $inline_query->getQuery();
+        // Information about the chosen result is returned.
+        // $inline_query = $this->getChosenInlineResult();
+        // $query        = $inline_query->getQuery();
 
         return parent::execute();
     }

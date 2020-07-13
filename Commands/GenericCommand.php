@@ -38,12 +38,12 @@ class GenericCommand extends SystemCommand
     protected $version = '1.1.0';
 
     /**
-     * Command execute method
+     * Main command execution
      *
      * @return \Longman\TelegramBot\Entities\ServerResponse
      * @throws \Longman\TelegramBot\Exception\TelegramException
      */
-    public function execute()
+    public function execute(): \Longman\TelegramBot\Entities\ServerResponse
     {
         $message = $this->getMessage();
 

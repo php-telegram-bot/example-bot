@@ -13,6 +13,7 @@
 namespace Longman\TelegramBot\Commands\SystemCommands;
 
 use Longman\TelegramBot\Commands\SystemCommand;
+use Longman\TelegramBot\Entities\ServerResponse;
 
 /**
  * Edited message command
@@ -29,22 +30,21 @@ class EditedmessageCommand extends SystemCommand
     /**
      * @var string
      */
-    protected $description = 'User edited message';
+    protected $description = 'Handle edited message';
 
     /**
      * @var string
      */
-    protected $version = '1.1.1';
+    protected $version = '1.2.0';
 
     /**
-     * Command execute method
+     * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
-        //$edited_message = $this->getEditedMessage();
+        // $edited_message = $this->getEditedMessage();
 
         return parent::execute();
     }

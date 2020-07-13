@@ -10,15 +10,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\SystemCommands;
-
-use Longman\TelegramBot\Commands\SystemCommand;
-
 /**
  * Channel post command
  *
  * Gets executed when a new post is created in a channel.
  */
+
+namespace Longman\TelegramBot\Commands\SystemCommands;
+
+use Longman\TelegramBot\Commands\SystemCommand;
+use Longman\TelegramBot\Entities\ServerResponse;
+
 class ChannelpostCommand extends SystemCommand
 {
     /**
@@ -34,17 +36,16 @@ class ChannelpostCommand extends SystemCommand
     /**
      * @var string
      */
-    protected $version = '1.0.0';
+    protected $version = '1.1.0';
 
     /**
-     * Command execute method
+     * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
-        //$channel_post = $this->getUpdate()->getChannelPost();
+        // $channel_post = $this->getChannelPost();
 
         return parent::execute();
     }

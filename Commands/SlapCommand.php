@@ -10,16 +10,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\UserCommands;
-
-use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Request;
-
 /**
  * User "/slap" command
  *
  * Slap a user around with a big trout!
  */
+
+namespace Longman\TelegramBot\Commands\UserCommands;
+
+use Longman\TelegramBot\Commands\UserCommand;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Exception\TelegramException;
+
 class SlapCommand extends UserCommand
 {
     /**
@@ -40,36 +42,26 @@ class SlapCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '1.1.0';
+    protected $version = '1.2.0';
 
     /**
-     * Command execute method
+     * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
+     * @throws TelegramException
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
         $message = $this->getMessage();
-
-        $chat_id = $message->getChat()->getId();
         $text    = $message->getText(true);
 
         $sender = '@' . $message->getFrom()->getUsername();
 
-        //username validation
-        $test = preg_match('/@[\w_]{5,}/', $text);
-        if ($test === 0) {
-            $text = $sender . ' sorry no one to slap around..';
-        } else {
-            $text = $sender . ' slaps ' . $text . ' around a bit with a large trout';
+        // Username validation (simply checking for `@something` in the text)
+        if (0 === preg_match('/@[\w_]{5,}/', $text)) {
+            return $this->replyToChat('Sorry, no one to slap around...');
         }
 
-        $data = [
-            'chat_id' => $chat_id,
-            'text'    => $text,
-        ];
-
-        return Request::sendMessage($data);
+        return $this->replyToChat($sender . ' slaps ' . $text . ' around a bit with a large trout');
     }
 }

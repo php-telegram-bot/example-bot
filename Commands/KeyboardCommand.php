@@ -12,15 +12,18 @@
 
 namespace Longman\TelegramBot\Commands\UserCommands;
 
-use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Entities\Keyboard;
-use Longman\TelegramBot\Request;
-
 /**
  * User "/keyboard" command
  *
  * Display a keyboard with a few buttons.
  */
+
+use Longman\TelegramBot\Commands\UserCommand;
+use Longman\TelegramBot\Entities\Keyboard;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Exception\TelegramException;
+use Longman\TelegramBot\Request;
+
 class KeyboardCommand extends UserCommand
 {
     /**
@@ -41,21 +44,20 @@ class KeyboardCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '0.2.0';
+    protected $version = '0.3.0';
 
     /**
-     * Command execute method
+     * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
+     * @throws TelegramException
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
-        //Keyboard examples
         /** @var Keyboard[] $keyboards */
         $keyboards = [];
 
-        //Example 0
+        // Simple digits
         $keyboards[] = new Keyboard(
             ['7', '8', '9'],
             ['4', '5', '6'],
@@ -63,7 +65,7 @@ class KeyboardCommand extends UserCommand
             [' ', '0', ' ']
         );
 
-        //Example 1
+        // Digits with operations
         $keyboards[] = new Keyboard(
             ['7', '8', '9', '+'],
             ['4', '5', '6', '-'],
@@ -71,35 +73,33 @@ class KeyboardCommand extends UserCommand
             [' ', '0', ' ', '/']
         );
 
-        //Example 2
+        // Short version with 1 button per row
         $keyboards[] = new Keyboard('A', 'B', 'C');
 
-        //Example 3
+        // Some different ways of creating rows and buttons
         $keyboards[] = new Keyboard(
             ['text' => 'A'],
             'B',
             ['C', 'D']
         );
 
-        //Example 4 (bots version 2.0)
+        // Buttons to perform Contact or Location sharing
         $keyboards[] = new Keyboard([
             ['text' => 'Send my contact', 'request_contact' => true],
             ['text' => 'Send my location', 'request_location' => true],
         ]);
 
-        //Return a random keyboard.
-        $keyboard = $keyboards[mt_rand(0, count($keyboards) - 1)]
+        // Shuffle our example keyboards
+        shuffle($keyboards);
+
+        // Return a random keyboard
+        $keyboard = end($keyboards)
             ->setResizeKeyboard(true)
             ->setOneTimeKeyboard(true)
             ->setSelective(false);
 
-        $chat_id = $this->getMessage()->getChat()->getId();
-        $data    = [
-            'chat_id'      => $chat_id,
-            'text'         => 'Press a Button:',
+        return $this->replyToChat('Press a Button!', [
             'reply_markup' => $keyboard,
-        ];
-
-        return Request::sendMessage($data);
+        ]);
     }
 }

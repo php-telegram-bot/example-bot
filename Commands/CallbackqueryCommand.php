@@ -10,11 +10,6 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\SystemCommands;
-
-use Longman\TelegramBot\Commands\SystemCommand;
-use Longman\TelegramBot\Request;
-
 /**
  * Callback query command
  *
@@ -22,6 +17,12 @@ use Longman\TelegramBot\Request;
  *
  * @see InlinekeyboardCommand.php
  */
+
+namespace Longman\TelegramBot\Commands\SystemCommands;
+
+use Longman\TelegramBot\Commands\SystemCommand;
+use Longman\TelegramBot\Entities\ServerResponse;
+
 class CallbackqueryCommand extends SystemCommand
 {
     /**
@@ -32,32 +33,28 @@ class CallbackqueryCommand extends SystemCommand
     /**
      * @var string
      */
-    protected $description = 'Reply to callback query';
+    protected $description = 'Handle the callback query';
 
     /**
      * @var string
      */
-    protected $version = '1.1.1';
+    protected $version = '1.2.0';
 
     /**
-     * Command execute method
+     * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
-        $callback_query    = $this->getCallbackQuery();
-        $callback_query_id = $callback_query->getId();
-        $callback_data     = $callback_query->getData();
+        // Callback query data can be fetched and handled accordingly.
+        $callback_query = $this->getCallbackQuery();
+        $callback_data  = $callback_query->getData();
 
-        $data = [
-            'callback_query_id' => $callback_query_id,
-            'text'              => 'Hello World!',
-            'show_alert'        => $callback_data === 'thumb up',
-            'cache_time'        => 5,
-        ];
-
-        return Request::answerCallbackQuery($data);
+        return $callback_query->answer([
+            'text'       => 'Hello World!',
+            'show_alert' => $callback_data === 'thumb up',
+            'cache_time' => 5,
+        ]);
     }
 }

@@ -12,15 +12,17 @@
 
 namespace Longman\TelegramBot\Commands\UserCommands;
 
-use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Entities\Keyboard;
-use Longman\TelegramBot\Request;
-
 /**
  * User "/hidekeyboard" command
  *
  * Command to hide the keyboard.
  */
+
+use Longman\TelegramBot\Commands\UserCommand;
+use Longman\TelegramBot\Entities\Keyboard;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Exception\TelegramException;
+
 class HidekeyboardCommand extends UserCommand
 {
     /**
@@ -41,24 +43,19 @@ class HidekeyboardCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '0.1.0';
+    protected $version = '0.2.0';
 
     /**
-     * Command execute method
+     * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
+     * @throws TelegramException
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
-        $chat_id = $this->getMessage()->getChat()->getId();
-
-        $data = [
-            'chat_id'      => $chat_id,
-            'text'         => 'Keyboard Hidden',
+        // Remove the keyboard and send a message.
+        return $this->replyToChat('Keyboard Hidden', [
             'reply_markup' => Keyboard::remove(),
-        ];
-
-        return Request::sendMessage($data);
+        ]);
     }
 }

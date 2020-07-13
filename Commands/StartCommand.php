@@ -10,16 +10,23 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\SystemCommands;
-
-use Longman\TelegramBot\Commands\SystemCommand;
-use Longman\TelegramBot\Request;
-
 /**
  * Start command
  *
  * Gets executed when a user first starts using the bot.
+ *
+ * When using deep-linking, the parameter can be accessed by getting the command text.
+ *
+ * @see https://core.telegram.org/bots#deep-linking
  */
+
+namespace Longman\TelegramBot\Commands\SystemCommands;
+
+use Longman\TelegramBot\Commands\SystemCommand;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Exception\TelegramException;
+use Longman\TelegramBot\Request;
+
 class StartCommand extends SystemCommand
 {
     /**
@@ -40,7 +47,7 @@ class StartCommand extends SystemCommand
     /**
      * @var string
      */
-    protected $version = '1.1.0';
+    protected $version = '1.2.0';
 
     /**
      * @var bool
@@ -48,23 +55,19 @@ class StartCommand extends SystemCommand
     protected $private_only = true;
 
     /**
-     * Command execute method
+     * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
+     * @throws TelegramException
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
-        $message = $this->getMessage();
+        // If you use deep-linking, get the parameter like this:
+        // $deep_linking_parameter = $this->getMessage()->getText(true);
 
-        $chat_id = $message->getChat()->getId();
-        $text    = 'Hi there!' . PHP_EOL . 'Type /help to see all commands!';
-
-        $data = [
-            'chat_id' => $chat_id,
-            'text'    => $text,
-        ];
-
-        return Request::sendMessage($data);
+        return $this->replyToChat(
+            'Hi there!' . PHP_EOL .
+            'Type /help to see all commands!'
+        );
     }
 }

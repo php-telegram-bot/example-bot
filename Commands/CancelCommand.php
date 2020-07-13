@@ -10,20 +10,23 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\UserCommands;
-
-use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Conversation;
-use Longman\TelegramBot\Entities\Keyboard;
-use Longman\TelegramBot\Request;
-
 /**
  * User "/cancel" command
  *
  * This command cancels the currently active conversation and
  * returns a message to let the user know which conversation it was.
+ *
  * If no conversation is active, the returned message says so.
  */
+
+namespace Longman\TelegramBot\Commands\UserCommands;
+
+use Longman\TelegramBot\Commands\UserCommand;
+use Longman\TelegramBot\Conversation;
+use Longman\TelegramBot\Entities\Keyboard;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Exception\TelegramException;
+
 class CancelCommand extends UserCommand
 {
     /**
@@ -44,7 +47,7 @@ class CancelCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '0.2.1';
+    protected $version = '0.3.0';
 
     /**
      * @var bool
@@ -52,12 +55,22 @@ class CancelCommand extends UserCommand
     protected $need_mysql = true;
 
     /**
-     * Command execute method
+     * Main command execution if no DB connection is available
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @throws TelegramException
      */
-    public function execute()
+    public function executeNoDb(): ServerResponse
+    {
+        return $this->removeKeyboard('Nothing to cancel.');
+    }
+
+    /**
+     * Main command execution
+     *
+     * @return ServerResponse
+     * @throws TelegramException
+     */
+    public function execute(): ServerResponse
     {
         $text = 'No active conversation!';
 
@@ -76,30 +89,17 @@ class CancelCommand extends UserCommand
     }
 
     /**
-     * Remove the keyboard and output a text
+     * Remove the keyboard and output a text.
      *
      * @param string $text
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
+     * @throws TelegramException
      */
-    private function removeKeyboard($text)
+    private function removeKeyboard($text): ServerResponse
     {
-        return Request::sendMessage([
+        return $this->replyToChat($text, [
             'reply_markup' => Keyboard::remove(['selective' => true]),
-            'chat_id'      => $this->getMessage()->getChat()->getId(),
-            'text'         => $text,
         ]);
-    }
-
-    /**
-     * Command execute method if MySQL is required but not available
-     *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
-     */
-    public function executeNoDb()
-    {
-        return $this->removeKeyboard('Nothing to cancel.');
     }
 }

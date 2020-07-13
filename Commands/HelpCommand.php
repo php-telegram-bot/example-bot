@@ -10,17 +10,19 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\UserCommands;
-
-use Longman\TelegramBot\Commands\Command;
-use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Request;
-
 /**
  * User "/help" command
  *
  * Command that lists all available commands and displays them in User and Admin sections.
  */
+
+namespace Longman\TelegramBot\Commands\UserCommands;
+
+use Longman\TelegramBot\Commands\Command;
+use Longman\TelegramBot\Commands\UserCommand;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Exception\TelegramException;
+
 class HelpCommand extends UserCommand
 {
     /**
@@ -41,50 +43,48 @@ class HelpCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '1.3.0';
+    protected $version = '1.4.0';
 
     /**
-     * @inheritdoc
+     * Main command execution
+     *
+     * @return ServerResponse
+     * @throws TelegramException
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
         $message     = $this->getMessage();
-        $chat_id     = $message->getChat()->getId();
         $command_str = trim($message->getText(true));
 
         // Admin commands shouldn't be shown in group chats
         $safe_to_show = $message->getChat()->isPrivateChat();
 
-        $data = [
-            'chat_id'    => $chat_id,
-            'parse_mode' => 'markdown',
-        ];
-
-        list($all_commands, $user_commands, $admin_commands) = $this->getUserAdminCommands();
+        [$all_commands, $user_commands, $admin_commands] = $this->getUserAndAdminCommands();
 
         // If no command parameter is passed, show the list.
         if ($command_str === '') {
-            $data['text'] = '*Commands List*:' . PHP_EOL;
+            $text = '*Commands List*:' . PHP_EOL;
             foreach ($user_commands as $user_command) {
-                $data['text'] .= '/' . $user_command->getName() . ' - ' . $user_command->getDescription() . PHP_EOL;
+                $text .= '/' . $user_command->getName() . ' - ' . $user_command->getDescription() . PHP_EOL;
             }
 
             if ($safe_to_show && count($admin_commands) > 0) {
-                $data['text'] .= PHP_EOL . '*Admin Commands List*:' . PHP_EOL;
+                $text .= PHP_EOL . '*Admin Commands List*:' . PHP_EOL;
                 foreach ($admin_commands as $admin_command) {
-                    $data['text'] .= '/' . $admin_command->getName() . ' - ' . $admin_command->getDescription() . PHP_EOL;
+                    $text .= '/' . $admin_command->getName() . ' - ' . $admin_command->getDescription() . PHP_EOL;
                 }
             }
 
-            $data['text'] .= PHP_EOL . 'For exact command help type: /help <command>';
+            $text .= PHP_EOL . 'For exact command help type: /help <command>';
 
-            return Request::sendMessage($data);
+            return $this->replyToChat($text, ['parse_mode' => 'markdown']);
         }
 
         $command_str = str_replace('/', '', $command_str);
         if (isset($all_commands[$command_str]) && ($safe_to_show || !$all_commands[$command_str]->isAdminCommand())) {
-            $command      = $all_commands[$command_str];
-            $data['text'] = sprintf(
+            $command = $all_commands[$command_str];
+
+            return $this->replyToChat(sprintf(
                 'Command: %s (v%s)' . PHP_EOL .
                 'Description: %s' . PHP_EOL .
                 'Usage: %s',
@@ -92,37 +92,35 @@ class HelpCommand extends UserCommand
                 $command->getVersion(),
                 $command->getDescription(),
                 $command->getUsage()
-            );
-
-            return Request::sendMessage($data);
+            ), ['parse_mode' => 'markdown']);
         }
 
-        $data['text'] = 'No help available: Command /' . $command_str . ' not found';
-
-        return Request::sendMessage($data);
+        return $this->replyToChat('No help available: Command `/' . $command_str . '` not found', ['parse_mode' => 'markdown']);
     }
 
     /**
      * Get all available User and Admin commands to display in the help list.
      *
      * @return Command[][]
+     * @throws TelegramException
      */
-    protected function getUserAdminCommands()
+    protected function getUserAndAdminCommands(): array
     {
+        /** @var Command[] $all_commands */
+        $all_commands = $this->telegram->getCommandsList();
+
         // Only get enabled Admin and User commands that are allowed to be shown.
-        /** @var Command[] $commands */
-        $commands = array_filter($this->telegram->getCommandsList(), function ($command) {
-            /** @var Command $command */
+        $commands = array_filter($all_commands, function ($command): bool {
             return !$command->isSystemCommand() && $command->showInHelp() && $command->isEnabled();
         });
 
-        $user_commands = array_filter($commands, function ($command) {
-            /** @var Command $command */
+        // Filter out all User commands
+        $user_commands = array_filter($commands, function ($command): bool {
             return $command->isUserCommand();
         });
 
-        $admin_commands = array_filter($commands, function ($command) {
-            /** @var Command $command */
+        // Filter out all Admin commands
+        $admin_commands = array_filter($commands, function ($command): bool {
             return $command->isAdminCommand();
         });
 

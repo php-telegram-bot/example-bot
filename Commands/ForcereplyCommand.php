@@ -44,12 +44,12 @@ class ForcereplyCommand extends UserCommand
     protected $version = '0.1.0';
 
     /**
-     * Command execute method
+     * Main command execution
      *
      * @return \Longman\TelegramBot\Entities\ServerResponse
      * @throws \Longman\TelegramBot\Exception\TelegramException
      */
-    public function execute()
+    public function execute(): \Longman\TelegramBot\Entities\ServerResponse
     {
         $chat_id = $this->getMessage()->getChat()->getId();
 

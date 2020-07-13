@@ -11,7 +11,7 @@
  */
 
 /**
- * Pre-checkout query required for "/payment" command.
+ * Pre-checkout query required for "/payment" command
  *
  * In this command you can perform any necessary verifications and checks
  * to allow or disallow the final checkout and payment of the invoice.
@@ -20,6 +20,7 @@
 namespace Longman\TelegramBot\Commands\SystemCommands;
 
 use Longman\TelegramBot\Commands\SystemCommand;
+use Longman\TelegramBot\Entities\ServerResponse;
 
 class PrecheckoutqueryCommand extends SystemCommand
 {
@@ -39,9 +40,11 @@ class PrecheckoutqueryCommand extends SystemCommand
     protected $version = '0.1.0';
 
     /**
-     * @inheritDoc
+     * Main command execution
+     *
+     * @return ServerResponse
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
         // Simply approve, no need for any checks at this point.
         return $this->getPreCheckoutQuery()->answer(true);

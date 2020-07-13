@@ -10,15 +10,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\SystemCommands;
-
-use Longman\TelegramBot\Commands\SystemCommand;
-
 /**
  * Edited channel post command
  *
  * Gets executed when a post in a channel is edited.
  */
+
+namespace Longman\TelegramBot\Commands\SystemCommands;
+
+use Longman\TelegramBot\Commands\SystemCommand;
+use Longman\TelegramBot\Entities\ServerResponse;
+
 class EditedchannelpostCommand extends SystemCommand
 {
     /**
@@ -34,17 +36,16 @@ class EditedchannelpostCommand extends SystemCommand
     /**
      * @var string
      */
-    protected $version = '1.0.0';
+    protected $version = '1.1.0';
 
     /**
-     * Command execute method
+     * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
-        //$edited_channel_post = $this->getUpdate()->getEditedChannelPost();
+        // $edited_channel_post = $this->getEditedChannelPost();
 
         return parent::execute();
     }

@@ -10,21 +10,26 @@
  * file that was distributed with this source code.
  */
 
+/**
+ * User "/weather" command
+ *
+ * Get weather info for the location passed as the parameter..
+ *
+ * A OpenWeatherMap.org API key is required for this command!
+ * You can be set in your config.php file:
+ * ['commands']['configs']['weather'] => ['owm_api_key' => 'your_owm_api_key_here']
+ */
+
 namespace Longman\TelegramBot\Commands\UserCommands;
 
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Request;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\TelegramLog;
 
-/**
- * User "/weather" command
- *
- * Get weather info for any place.
- * This command requires an API key to be set via command config.
- */
 class WeatherCommand extends UserCommand
 {
     /**
@@ -45,7 +50,7 @@ class WeatherCommand extends UserCommand
     /**
      * @var string
      */
-    protected $version = '1.2.0';
+    protected $version = '1.3.0';
 
     /**
      * Base URI for OpenWeatherMap API
@@ -61,7 +66,7 @@ class WeatherCommand extends UserCommand
      *
      * @return string
      */
-    private function getWeatherData($location)
+    private function getWeatherData($location): string
     {
         $client = new Client(['base_uri' => $this->owm_api_base_uri]);
         $path   = 'weather';
@@ -89,7 +94,7 @@ class WeatherCommand extends UserCommand
      *
      * @return string
      */
-    private function getWeatherString(array $data)
+    private function getWeatherString(array $data): string
     {
         try {
             if (!(isset($data['cod']) && $data['cod'] === 200)) {
@@ -114,7 +119,7 @@ class WeatherCommand extends UserCommand
                 $data['sys']['country'], //country
                 $data['main']['temp'], //temperature
                 $data['weather'][0]['description'], //description of weather
-                isset($conditions[$conditions_now]) ? $conditions[$conditions_now] : ''
+                $conditions[$conditions_now] ?? ''
             );
         } catch (Exception $e) {
             TelegramLog::error($e->getMessage());
@@ -124,38 +129,28 @@ class WeatherCommand extends UserCommand
     }
 
     /**
-     * Command execute method
+     * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
+     * @throws TelegramException
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
-        $message = $this->getMessage();
-        $chat_id = $message->getChat()->getId();
-        $text    = '';
-
-        if (trim($this->getConfig('owm_api_key'))) {
-            $location = trim($message->getText(true));
-            if ($location !== '') {
-                if ($weather_data = json_decode($this->getWeatherData($location), true)) {
-                    $text = $this->getWeatherString($weather_data);
-                }
-                if ($text === '') {
-                    $text = 'Cannot find weather for location: ' . $location;
-                }
-            } else {
-                $text = 'You must specify location in format: /weather <city>';
-            }
-        } else {
-            $text = 'OpenWeatherMap API key not defined.';
+        // Check to make sure the required OWM API key has been defined.
+        $owm_api_key = $this->getConfig('owm_api_key');
+        if (empty($owm_api_key)) {
+            return $this->replyToChat('OpenWeatherMap API key not defined.');
         }
 
-        $data = [
-            'chat_id' => $chat_id,
-            'text'    => $text,
-        ];
+        $location = trim($this->getMessage()->getText(true));
+        if ($location === '') {
+            return $this->replyToChat('You must specify a location as: ' . $this->getUsage());
+        }
 
-        return Request::sendMessage($data);
+        $text = 'Cannot find weather for location: ' . $location;
+        if ($weather_data = json_decode($this->getWeatherData($location), true)) {
+            $text = $this->getWeatherString($weather_data);
+        }
+        return $this->replyToChat($text);
     }
 }

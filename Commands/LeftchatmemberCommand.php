@@ -10,15 +10,21 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\SystemCommands;
-
-use Longman\TelegramBot\Commands\SystemCommand;
-
 /**
  * Left chat member command
  *
  * Gets executed when a member leaves the chat.
+ *
+ * NOTE: This command must be called from GenericmessageCommand.php!
+ * It is only in a separate command file for easier code maintenance.
  */
+
+namespace Longman\TelegramBot\Commands\SystemCommands;
+
+use Longman\TelegramBot\Commands\SystemCommand;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Exception\TelegramException;
+
 class LeftchatmemberCommand extends SystemCommand
 {
     /**
@@ -34,19 +40,19 @@ class LeftchatmemberCommand extends SystemCommand
     /**
      * @var string
      */
-    protected $version = '1.1.0';
+    protected $version = '1.2.0';
 
     /**
-     * Command execute method
+     * Main command execution
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return ServerResponse
+     * @throws TelegramException
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
-        //$message = $this->getMessage();
-        //$member = $message->getLeftChatMember();
+        $message = $this->getMessage();
+        $member  = $message->getLeftChatMember();
 
-        return parent::execute();
+        return $this->replyToChat('Sorry to see you go, ' . $member->getFirstName());
     }
 }
