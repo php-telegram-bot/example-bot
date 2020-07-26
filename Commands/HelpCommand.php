@@ -8,11 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\UserCommands;
+namespace PhpTelegramBot\Core\Commands\UserCommands;
 
-use Longman\TelegramBot\Commands\Command;
-use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Request;
+use PhpTelegramBot\Core\Commands\Command;
+use PhpTelegramBot\Core\Commands\UserCommand;
+use PhpTelegramBot\Core\Request;
 
 /**
  * User "/help" command

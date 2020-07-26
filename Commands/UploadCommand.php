@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\UserCommands;
+namespace PhpTelegramBot\Core\Commands\UserCommands;
 
-use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Conversation;
-use Longman\TelegramBot\Entities\Keyboard;
-use Longman\TelegramBot\Request;
+use PhpTelegramBot\Core\Commands\UserCommand;
+use PhpTelegramBot\Core\Conversation;
+use PhpTelegramBot\Core\Entities\Keyboard;
+use PhpTelegramBot\Core\Request;
 
 /**
  * User "/upload" command

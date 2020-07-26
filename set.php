@@ -17,7 +17,7 @@ $hook_url     = 'https://your-domain/path/to/hook.php';
 
 try {
     // Create Telegram API object
-    $telegram = new Longman\TelegramBot\Telegram($bot_api_key, $bot_username);
+    $telegram = new PhpTelegramBot\Core\Telegram($bot_api_key, $bot_username);
 
     // Set webhook
     $result = $telegram->setWebhook($hook_url);
@@ -28,6 +28,6 @@ try {
     if ($result->isOk()) {
         echo $result->getDescription();
     }
-} catch (Longman\TelegramBot\Exception\TelegramException $e) {
+} catch (PhpTelegramBot\Core\Exception\TelegramException $e) {
     echo $e->getMessage();
 }

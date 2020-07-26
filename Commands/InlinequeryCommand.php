@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Longman\TelegramBot\Commands\SystemCommands;
+namespace PhpTelegramBot\Core\Commands\SystemCommands;
 
-use Longman\TelegramBot\Commands\SystemCommand;
-use Longman\TelegramBot\Entities\InlineQuery\InlineQueryResultArticle;
-use Longman\TelegramBot\Entities\InputMessageContent\InputTextMessageContent;
-use Longman\TelegramBot\Request;
+use PhpTelegramBot\Core\Commands\SystemCommand;
+use PhpTelegramBot\Core\Entities\InlineQuery\InlineQueryResultArticle;
+use PhpTelegramBot\Core\Entities\InputMessageContent\InputTextMessageContent;
+use PhpTelegramBot\Core\Request;
 
 /**
  * Inline query command
@@ -40,8 +40,8 @@ class InlinequeryCommand extends SystemCommand
     /**
      * Command execute method
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return \PhpTelegramBot\Core\Entities\ServerResponse
+     * @throws \PhpTelegramBot\Core\Exception\TelegramException
      */
     public function execute()
     {

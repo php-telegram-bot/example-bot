@@ -10,13 +10,13 @@
  * Written by Marco Boretto <marco.bore@gmail.com>
  */
 
-namespace Longman\TelegramBot\Commands\UserCommands;
+namespace PhpTelegramBot\Core\Commands\UserCommands;
 
-use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Entities\File;
-use Longman\TelegramBot\Entities\PhotoSize;
-use Longman\TelegramBot\Entities\UserProfilePhotos;
-use Longman\TelegramBot\Request;
+use PhpTelegramBot\Core\Commands\UserCommand;
+use PhpTelegramBot\Core\Entities\File;
+use PhpTelegramBot\Core\Entities\PhotoSize;
+use PhpTelegramBot\Core\Entities\UserProfilePhotos;
+use PhpTelegramBot\Core\Request;
 
 /**
  * User "/whoami" command
@@ -53,8 +53,8 @@ class WhoamiCommand extends UserCommand
     /**
      * Command execute method
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return \PhpTelegramBot\Core\Entities\ServerResponse
+     * @throws \PhpTelegramBot\Core\Exception\TelegramException
      */
     public function execute()
     {

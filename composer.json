@@ -1,5 +1,5 @@
 {
-    "name": "telegram-bot/example-bot",
+    "name": "php-telegram-bot/example-bot",
     "type": "project",
     "description": "PHP Telegram Bot Example",
     "keywords": ["telegram", "bot", "example"],
@@ -17,6 +17,6 @@
         }
     ],
     "require": {
-        "longman/telegram-bot": "*"
+        "php-telegram-bot/core": "*"
     }
 }

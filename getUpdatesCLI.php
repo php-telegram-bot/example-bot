@@ -36,7 +36,7 @@ $mysql_credentials = [
 
 try {
     // Create Telegram API object
-    $telegram = new Longman\TelegramBot\Telegram($bot_api_key, $bot_username);
+    $telegram = new PhpTelegramBot\Core\Telegram($bot_api_key, $bot_username);
 
     // Add commands paths containing your custom commands
     $telegram->addCommandsPaths($commands_paths);
@@ -51,7 +51,7 @@ try {
     // https://github.com/php-telegram-bot/core/blob/master/doc/01-utils.md#logging
     //
     // (this example requires Monolog: composer require monolog/monolog)
-    //Longman\TelegramBot\TelegramLog::initialize(
+    //PhpTelegramBot\Core\TelegramLog::initialize(
     //    new Monolog\Logger('telegram_bot', [
     //        (new Monolog\Handler\StreamHandler(__DIR__ . "/{$bot_username}_debug.log", Monolog\Logger::DEBUG))->setFormatter(new Monolog\Formatter\LineFormatter(null, null, true)),
     //        (new Monolog\Handler\StreamHandler(__DIR__ . "/{$bot_username}_error.log", Monolog\Logger::ERROR))->setFormatter(new Monolog\Formatter\LineFormatter(null, null, true)),
@@ -82,11 +82,11 @@ try {
         echo date('Y-m-d H:i:s', time()) . ' - Failed to fetch updates' . PHP_EOL;
         echo $server_response->printError();
     }
-} catch (Longman\TelegramBot\Exception\TelegramException $e) {
+} catch (PhpTelegramBot\Core\Exception\TelegramException $e) {
     echo $e->getMessage();
     // Log telegram errors
-    Longman\TelegramBot\TelegramLog::error($e);
-} catch (Longman\TelegramBot\Exception\TelegramLogException $e) {
+    PhpTelegramBot\Core\TelegramLog::error($e);
+} catch (PhpTelegramBot\Core\Exception\TelegramLogException $e) {
     // Catch log initialisation errors
     echo $e->getMessage();
 }
