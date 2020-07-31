@@ -15,8 +15,8 @@
     <rule ref="PSR12"/>
 
     <rule ref="Generic.CodeAnalysis.EmptyStatement">
-        <!-- Allow empty catch statement for explanation comments -->
-        <exclude name="Generic.CodeAnalysis.EmptyStatement.DetectedCatch"/>
+        <!-- Allow empty statements for explanation comments -->
+        <exclude name="Generic.CodeAnalysis.EmptyStatement"/>
     </rule>
 
     <rule ref="Squiz.WhiteSpace.ControlStructureSpacing">

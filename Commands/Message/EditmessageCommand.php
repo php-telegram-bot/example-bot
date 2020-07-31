@@ -10,6 +10,12 @@
  * file that was distributed with this source code.
  */
 
+/**
+ * User "/editmessage" command
+ *
+ * Command to edit a message sent by the bot.
+ */
+
 namespace Longman\TelegramBot\Commands\UserCommands;
 
 use Longman\TelegramBot\Commands\UserCommand;
@@ -17,11 +23,6 @@ use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
-/**
- * User "/editmessage" command
- *
- * Command to edit a message via bot.
- */
 class EditmessageCommand extends UserCommand
 {
     /**
@@ -32,7 +33,7 @@ class EditmessageCommand extends UserCommand
     /**
      * @var string
      */
-    protected $description = 'Edit message';
+    protected $description = 'Edit a message sent by the bot';
 
     /**
      * @var string
@@ -58,17 +59,15 @@ class EditmessageCommand extends UserCommand
         $text             = $message->getText(true);
 
         if ($reply_to_message && $message_to_edit = $reply_to_message->getMessageId()) {
-            $data_edit = [
+            // Try to edit the selected message.
+            $result = Request::editMessageText([
                 'chat_id'    => $chat_id,
                 'message_id' => $message_to_edit,
                 'text'       => $text ?: 'Edited message',
-            ];
+            ]);
 
-            // Try to edit selected message.
-            $result = Request::editMessageText($data_edit);
-
+            // If successful, delete this editing reply message.
             if ($result->isOk()) {
-                // Delete this editing reply message.
                 Request::deleteMessage([
                     'chat_id'    => $chat_id,
                     'message_id' => $message->getMessageId(),
@@ -78,11 +77,6 @@ class EditmessageCommand extends UserCommand
             return $result;
         }
 
-        $data = [
-            'chat_id' => $chat_id,
-            'text'    => sprintf("Reply to any bots' message and use /%s <your text> to edit it.", $this->name),
-        ];
-
-        return Request::sendMessage($data);
+        return $this->replyToChat(sprintf("Reply to any bots' message and use /%s <your text> to edit it.", $this->getName()));
     }
 }

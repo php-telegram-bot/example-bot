@@ -19,9 +19,9 @@
  * Select your bot and then "Payments". Then choose the provider of your choice.
  *
  * @BotFather will then present you with a payment provider token.
- * Copy this token and add it to your command config in your hook file:
  *
- * $telegram->setCommandConfig('payment', ['payment_provider_token' => 'your_payment_provider_token_here']);
+ * Copy this token and set it in your config.php file:
+ * ['commands']['configs']['payment'] => ['payment_provider_token' => 'your_payment_provider_token_here']
  *
  * You will also need to copy the `Precheckoutquerycommand.php` file.
  */

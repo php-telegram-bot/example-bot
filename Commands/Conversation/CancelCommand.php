@@ -74,7 +74,7 @@ class CancelCommand extends UserCommand
     {
         $text = 'No active conversation!';
 
-        //Cancel current conversation if any
+        // Cancel current conversation if any
         $conversation = new Conversation(
             $this->getMessage()->getFrom()->getId(),
             $this->getMessage()->getChat()->getId()

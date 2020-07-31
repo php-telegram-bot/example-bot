@@ -12,38 +12,38 @@
 
 namespace Longman\TelegramBot\Commands\UserCommands;
 
+/**
+ * User "/hidekeyboard" command
+ *
+ * Command to hide the keyboard.
+ */
+
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
-use Longman\TelegramBot\Request;
 
-/**
- * User "/forcereply" command
- *
- * Force a reply to a message.
- */
-class ForcereplyCommand extends UserCommand
+class HidekeyboardCommand extends UserCommand
 {
     /**
      * @var string
      */
-    protected $name = 'forcereply';
+    protected $name = 'hidekeyboard';
 
     /**
      * @var string
      */
-    protected $description = 'Force reply with reply markup';
+    protected $description = 'Hide the custom keyboard';
 
     /**
      * @var string
      */
-    protected $usage = '/forcereply';
+    protected $usage = '/hidekeyboard';
 
     /**
      * @var string
      */
-    protected $version = '0.1.0';
+    protected $version = '0.2.0';
 
     /**
      * Main command execution
@@ -53,14 +53,9 @@ class ForcereplyCommand extends UserCommand
      */
     public function execute(): ServerResponse
     {
-        $chat_id = $this->getMessage()->getChat()->getId();
-
-        $data = [
-            'chat_id'      => $chat_id,
-            'text'         => 'Write something:',
-            'reply_markup' => Keyboard::forceReply(),
-        ];
-
-        return Request::sendMessage($data);
+        // Remove the keyboard and send a message
+        return $this->replyToChat('Keyboard Hidden', [
+            'reply_markup' => Keyboard::remove(),
+        ]);
     }
 }

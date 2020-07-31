@@ -11,9 +11,9 @@
  */
 
 /**
- * Edited channel post command
+ * Chosen inline result command
  *
- * Gets executed when a post in a channel is edited.
+ * Gets executed when an item from an inline query is selected.
  */
 
 namespace Longman\TelegramBot\Commands\SystemCommands;
@@ -21,22 +21,22 @@ namespace Longman\TelegramBot\Commands\SystemCommands;
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\ServerResponse;
 
-class EditedchannelpostCommand extends SystemCommand
+class ChoseninlineresultCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'editedchannelpost';
+    protected $name = 'choseninlineresult';
 
     /**
      * @var string
      */
-    protected $description = 'Handle edited channel post';
+    protected $description = 'Handle the chosen inline result';
 
     /**
      * @var string
      */
-    protected $version = '1.1.0';
+    protected $version = '1.2.0';
 
     /**
      * Main command execution
@@ -45,7 +45,9 @@ class EditedchannelpostCommand extends SystemCommand
      */
     public function execute(): ServerResponse
     {
-        // $edited_channel_post = $this->getEditedChannelPost();
+        // Information about the chosen result is returned.
+        $inline_query = $this->getChosenInlineResult();
+        $query        = $inline_query->getQuery();
 
         return parent::execute();
     }

@@ -11,11 +11,9 @@
  */
 
 /**
- * Callback query command
+ * Channel post command
  *
- * This command handles all callback queries sent via inline keyboard buttons.
- *
- * @see InlinekeyboardCommand.php
+ * Gets executed when a new post is created in a channel.
  */
 
 namespace Longman\TelegramBot\Commands\SystemCommands;
@@ -23,22 +21,22 @@ namespace Longman\TelegramBot\Commands\SystemCommands;
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\ServerResponse;
 
-class CallbackqueryCommand extends SystemCommand
+class ChannelpostCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'callbackquery';
+    protected $name = 'channelpost';
 
     /**
      * @var string
      */
-    protected $description = 'Handle the callback query';
+    protected $description = 'Handle channel post';
 
     /**
      * @var string
      */
-    protected $version = '1.2.0';
+    protected $version = '1.1.0';
 
     /**
      * Main command execution
@@ -47,14 +45,9 @@ class CallbackqueryCommand extends SystemCommand
      */
     public function execute(): ServerResponse
     {
-        // Callback query data can be fetched and handled accordingly.
-        $callback_query = $this->getCallbackQuery();
-        $callback_data  = $callback_query->getData();
+        // Get the channel post
+        $channel_post = $this->getChannelPost();
 
-        return $callback_query->answer([
-            'text'       => 'Hello World!',
-            'show_alert' => $callback_data === 'thumb up',
-            'cache_time' => 5,
-        ]);
+        return parent::execute();
     }
 }

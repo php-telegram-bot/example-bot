@@ -11,32 +11,35 @@
  */
 
 /**
- * Chosen inline result command
+ * Generic message command
  *
- * Gets executed when an item from an inline query is selected.
+ * Gets executed when any type of message is sent.
+ *
+ * In this message-related context, we can handle any kind of message.
  */
 
 namespace Longman\TelegramBot\Commands\SystemCommands;
 
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Request;
 
-class ChoseninlineresultCommand extends SystemCommand
+class GenericmessageCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'choseninlineresult';
+    protected $name = 'genericmessage';
 
     /**
      * @var string
      */
-    protected $description = 'Handle the chosen inline result';
+    protected $description = 'Handle generic message';
 
     /**
      * @var string
      */
-    protected $version = '1.2.0';
+    protected $version = '1.0.0';
 
     /**
      * Main command execution
@@ -45,10 +48,14 @@ class ChoseninlineresultCommand extends SystemCommand
      */
     public function execute(): ServerResponse
     {
-        // Information about the chosen result is returned.
-        // $inline_query = $this->getChosenInlineResult();
-        // $query        = $inline_query->getQuery();
+        $message = $this->getMessage();
 
-        return parent::execute();
+        /**
+         * Handle any kind of message here
+         */
+
+        $message_text = $message->getText(true);
+
+        return Request::emptyResponse();
     }
 }

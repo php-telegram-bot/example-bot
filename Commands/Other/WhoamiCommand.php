@@ -20,7 +20,6 @@ namespace Longman\TelegramBot\Commands\UserCommands;
 
 use Longman\TelegramBot\ChatAction;
 use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Entities\File;
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Entities\UserProfilePhotos;
 use Longman\TelegramBot\Exception\TelegramException;
@@ -89,8 +88,8 @@ class WhoamiCommand extends UserCommand
             $from->getUsername()
         );
 
-        // Fetch user profile photo
-        $limit  = 10;
+        // Fetch the most recent user profile photo
+        $limit  = 1;
         $offset = null;
 
         $user_profile_photos_response = Request::getUserProfilePhotos([
@@ -104,26 +103,16 @@ class WhoamiCommand extends UserCommand
             $user_profile_photos = $user_profile_photos_response->getResult();
 
             if ($user_profile_photos->getTotalCount() > 0) {
-                $photos  = $user_profile_photos->getPhotos();
-                // $photo   = $photos[0][2];
-                // Get the best quality of the first profile photo found
+                $photos = $user_profile_photos->getPhotos();
+
+                // Get the best quality of the profile photo
                 $photo   = end($photos[0]);
                 $file_id = $photo->getFileId();
 
                 $data['photo']   = $file_id;
                 $data['caption'] = $caption;
 
-                $result = Request::sendPhoto($data);
-
-                // Download the photo after sending the message
-                $photo_file_response = Request::getFile(['file_id' => $file_id]);
-                if ($photo_file_response->isOk()) {
-                    /** @var File $photo_file */
-                    $photo_file = $photo_file_response->getResult();
-                    Request::downloadFile($photo_file);
-                }
-
-                return $result;
+                return Request::sendPhoto($data);
             }
         }
 

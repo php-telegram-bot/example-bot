@@ -22,7 +22,6 @@ use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Entities\Keyboard;
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
-use Longman\TelegramBot\Request;
 
 class KeyboardCommand extends UserCommand
 {
@@ -89,10 +88,8 @@ class KeyboardCommand extends UserCommand
             ['text' => 'Send my location', 'request_location' => true],
         ]);
 
-        // Shuffle our example keyboards
+        // Shuffle our example keyboards and return a random one
         shuffle($keyboards);
-
-        // Return a random keyboard
         $keyboard = end($keyboards)
             ->setResizeKeyboard(true)
             ->setOneTimeKeyboard(true)

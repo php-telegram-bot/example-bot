@@ -218,7 +218,7 @@ class DateCommand extends UserCommand
      */
     public function execute(): ServerResponse
     {
-//First we set up the necessary member variables.
+        // First we set up the necessary member variables.
         $this->client = new Client(['base_uri' => $this->google_api_base_uri]);
         if (($this->google_api_key = trim($this->getConfig('google_api_key'))) === '') {
             $this->google_api_key = null;

@@ -18,6 +18,8 @@ namespace Longman\TelegramBot\Commands\UserCommands;
  * Display an inline keyboard with a few buttons.
  *
  * This command requires CallbackqueryCommand to work!
+ *
+ * @see CallbackqueryCommand.php
  */
 
 use Longman\TelegramBot\Commands\UserCommand;
