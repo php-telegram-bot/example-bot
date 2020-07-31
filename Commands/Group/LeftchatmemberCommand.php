@@ -11,13 +11,12 @@
  */
 
 /**
- * Start command
+ * Left chat member command
  *
- * Gets executed when a user first starts using the bot.
+ * Gets executed when a member leaves the chat.
  *
- * When using deep-linking, the parameter can be accessed by getting the command text.
- *
- * @see https://core.telegram.org/bots#deep-linking
+ * NOTE: This command must be called from GenericmessageCommand.php!
+ * It is only in a separate command file for easier code maintenance.
  */
 
 namespace Longman\TelegramBot\Commands\SystemCommands;
@@ -26,32 +25,22 @@ use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
 
-class StartCommand extends SystemCommand
+class LeftchatmemberCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'start';
+    protected $name = 'leftchatmember';
 
     /**
      * @var string
      */
-    protected $description = 'Start command';
-
-    /**
-     * @var string
-     */
-    protected $usage = '/start';
+    protected $description = 'Left Chat Member';
 
     /**
      * @var string
      */
     protected $version = '1.2.0';
-
-    /**
-     * @var bool
-     */
-    protected $private_only = true;
 
     /**
      * Main command execution
@@ -61,12 +50,9 @@ class StartCommand extends SystemCommand
      */
     public function execute(): ServerResponse
     {
-        // If you use deep-linking, get the parameter like this:
-        // $deep_linking_parameter = $this->getMessage()->getText(true);
+        $message = $this->getMessage();
+        $member  = $message->getLeftChatMember();
 
-        return $this->replyToChat(
-            'Hi there!' . PHP_EOL .
-            'Type /help to see all commands!'
-        );
+        return $this->replyToChat('Sorry to see you go, ' . $member->getFirstName());
     }
 }

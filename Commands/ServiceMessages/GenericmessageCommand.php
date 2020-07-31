@@ -14,6 +14,8 @@
  * Generic message command
  *
  * Gets executed when any type of message is sent.
+ *
+ * In this service-message-related context, we can handle any incoming service-messages.
  */
 
 namespace Longman\TelegramBot\Commands\SystemCommands;
@@ -37,7 +39,7 @@ class GenericmessageCommand extends SystemCommand
     /**
      * @var string
      */
-    protected $version = '0.1.0';
+    protected $version = '1.0.0';
 
     /**
      * Main command execution
@@ -47,12 +49,25 @@ class GenericmessageCommand extends SystemCommand
     public function execute(): ServerResponse
     {
         $message = $this->getMessage();
-        $user_id = $message->getFrom()->getId();
 
-        // Handle successful payment
-        if ($payment = $message->getSuccessfulPayment()) {
-            return PaymentCommand::handleSuccessfulPayment($payment, $user_id);
-        }
+        /**
+         * Catch and handle any service messages here.
+         */
+
+        // The chat photo was deleted
+        $delete_chat_photo = $message->getDeleteChatPhoto();
+
+        // The group has been created
+        $group_chat_created = $message->getGroupChatCreated();
+
+        // The supergroup has been created
+        $supergroup_chat_created = $message->getSupergroupChatCreated();
+
+        // The channel has been created
+        $channel_chat_created = $message->getChannelChatCreated();
+
+        // Information about the payment
+        $successful_payment = $message->getSuccessfulPayment();
 
         return Request::emptyResponse();
     }

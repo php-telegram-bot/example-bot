@@ -10,33 +10,37 @@
  * file that was distributed with this source code.
  */
 
+/**
+ * New chat members command
+ *
+ * Gets executed when a new member joins the chat.
+ *
+ * NOTE: This command must be called from GenericmessageCommand.php!
+ * It is only in a separate command file for easier code maintenance.
+ */
+
 namespace Longman\TelegramBot\Commands\SystemCommands;
 
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
 
-/**
- * Generic command
- *
- * Gets executed for generic commands, when no other appropriate one is found.
- */
-class GenericCommand extends SystemCommand
+class NewchatmembersCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'generic';
+    protected $name = 'newchatmembers';
 
     /**
      * @var string
      */
-    protected $description = 'Handles generic commands or is executed by default when a command is not found';
+    protected $description = 'New Chat Members';
 
     /**
      * @var string
      */
-    protected $version = '1.1.0';
+    protected $version = '1.3.0';
 
     /**
      * Main command execution
@@ -47,15 +51,17 @@ class GenericCommand extends SystemCommand
     public function execute(): ServerResponse
     {
         $message = $this->getMessage();
-        $user_id = $message->getFrom()->getId();
-        $command = $message->getCommand();
+        $members = $message->getNewChatMembers();
 
-        // To enable proper use of the /whois command.
-        // If the user is an admin and the command is in the format "/whoisXYZ", call the /whois command
-        if (stripos($command, 'whois') === 0 && $this->telegram->isAdmin($user_id)) {
-            return $this->telegram->executeCommand('whois');
+        if ($message->botAddedInChat()) {
+            return $this->replyToChat('Hi there, you BOT!');
         }
 
-        return $this->replyToChat("Command /{$command} not found.. :(");
+        $member_names = [];
+        foreach ($members as $member) {
+            $member_names[] = $member->tryMention();
+        }
+
+        return $this->replyToChat('Hi ' . implode(', ', $member_names) . '!');
     }
 }

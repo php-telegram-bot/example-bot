@@ -10,34 +10,32 @@
  * file that was distributed with this source code.
  */
 
-/**
- * Generic message command
- *
- * Gets executed when any type of message is sent.
- */
-
 namespace Longman\TelegramBot\Commands\SystemCommands;
 
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\ServerResponse;
-use Longman\TelegramBot\Request;
 
-class GenericmessageCommand extends SystemCommand
+/**
+ * Edited message command
+ *
+ * Gets executed when a user message is edited.
+ */
+class EditedmessageCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'genericmessage';
+    protected $name = 'editedmessage';
 
     /**
      * @var string
      */
-    protected $description = 'Handle generic message';
+    protected $description = 'Handle edited message';
 
     /**
      * @var string
      */
-    protected $version = '0.1.0';
+    protected $version = '1.2.0';
 
     /**
      * Main command execution
@@ -46,14 +44,9 @@ class GenericmessageCommand extends SystemCommand
      */
     public function execute(): ServerResponse
     {
-        $message = $this->getMessage();
-        $user_id = $message->getFrom()->getId();
+        // Get the edited message
+        $edited_message = $this->getEditedMessage();
 
-        // Handle successful payment
-        if ($payment = $message->getSuccessfulPayment()) {
-            return PaymentCommand::handleSuccessfulPayment($payment, $user_id);
-        }
-
-        return Request::emptyResponse();
+        return parent::execute();
     }
 }

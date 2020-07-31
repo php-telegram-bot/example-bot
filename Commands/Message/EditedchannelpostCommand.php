@@ -11,33 +11,32 @@
  */
 
 /**
- * Generic message command
+ * Edited channel post command
  *
- * Gets executed when any type of message is sent.
+ * Gets executed when a post in a channel is edited.
  */
 
 namespace Longman\TelegramBot\Commands\SystemCommands;
 
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\ServerResponse;
-use Longman\TelegramBot\Request;
 
-class GenericmessageCommand extends SystemCommand
+class EditedchannelpostCommand extends SystemCommand
 {
     /**
      * @var string
      */
-    protected $name = 'genericmessage';
+    protected $name = 'editedchannelpost';
 
     /**
      * @var string
      */
-    protected $description = 'Handle generic message';
+    protected $description = 'Handle edited channel post';
 
     /**
      * @var string
      */
-    protected $version = '0.1.0';
+    protected $version = '1.1.0';
 
     /**
      * Main command execution
@@ -46,14 +45,9 @@ class GenericmessageCommand extends SystemCommand
      */
     public function execute(): ServerResponse
     {
-        $message = $this->getMessage();
-        $user_id = $message->getFrom()->getId();
+        // Get the edited channel post
+        $edited_channel_post = $this->getEditedChannelPost();
 
-        // Handle successful payment
-        if ($payment = $message->getSuccessfulPayment()) {
-            return PaymentCommand::handleSuccessfulPayment($payment, $user_id);
-        }
-
-        return Request::emptyResponse();
+        return parent::execute();
     }
 }

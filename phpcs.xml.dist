@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="php-telegram-bot-example-bot-ruleset">
+    <description>PHP Code Sniffer</description>
+
+    <arg value="snp"/>
+    <arg name="colors"/>
+    <arg name="parallel" value="8"/>
+    <arg name="encoding" value="utf-8"/>
+    <arg name="report-width" value="150"/>
+    <arg name="extensions" value="php"/>
+
+    <file>.</file>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+
+    <rule ref="PSR12"/>
+
+    <rule ref="Generic.CodeAnalysis.EmptyStatement">
+        <!-- Allow empty statements for explanation comments -->
+        <exclude name="Generic.CodeAnalysis.EmptyStatement"/>
+    </rule>
+
+    <rule ref="Squiz.WhiteSpace.ControlStructureSpacing">
+        <!-- Allow the empty line to improve readability -->
+        <exclude name="Squiz.WhiteSpace.ControlStructureSpacing.SpacingBeforeClose"/>
+    </rule>
+</ruleset>

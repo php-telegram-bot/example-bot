@@ -4,7 +4,7 @@
  * This file is part of the PHP Telegram Bot example-bot package.
  * https://github.com/php-telegram-bot/example-bot/
  *
- * (c) PHP Telegram Bot Developers
+ * (c) PHP Telegram Bot Team
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -24,6 +24,7 @@ namespace Longman\TelegramBot\Commands\SystemCommands;
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\Payments\LabeledPrice;
 use Longman\TelegramBot\Entities\Payments\ShippingOption;
+use Longman\TelegramBot\Entities\ServerResponse;
 
 class ShippingqueryCommand extends SystemCommand
 {
@@ -43,9 +44,11 @@ class ShippingqueryCommand extends SystemCommand
     protected $version = '0.1.0';
 
     /**
-     * @inheritDoc
+     * Main command execution
+     *
+     * @return ServerResponse
      */
-    public function execute()
+    public function execute(): ServerResponse
     {
         // Here you can check the shipping details and adjust the Shipping Options accordingly.
         // For this demo, let's simply define some fixed shipping options, a "Basic" and "Premium" shipping method.

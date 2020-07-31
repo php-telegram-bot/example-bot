@@ -14,6 +14,8 @@
  * Generic message command
  *
  * Gets executed when any type of message is sent.
+ *
+ * In this message-related context, we can handle any kind of message.
  */
 
 namespace Longman\TelegramBot\Commands\SystemCommands;
@@ -37,7 +39,7 @@ class GenericmessageCommand extends SystemCommand
     /**
      * @var string
      */
-    protected $version = '0.1.0';
+    protected $version = '1.0.0';
 
     /**
      * Main command execution
@@ -47,12 +49,12 @@ class GenericmessageCommand extends SystemCommand
     public function execute(): ServerResponse
     {
         $message = $this->getMessage();
-        $user_id = $message->getFrom()->getId();
 
-        // Handle successful payment
-        if ($payment = $message->getSuccessfulPayment()) {
-            return PaymentCommand::handleSuccessfulPayment($payment, $user_id);
-        }
+        /**
+         * Handle any kind of message here
+         */
+
+        $message_text = $message->getText(true);
 
         return Request::emptyResponse();
     }

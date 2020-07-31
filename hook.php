@@ -1,88 +1,78 @@
 <?php
+
 /**
- * README
- * This configuration file is intended to run the bot with the webhook method.
- * Uncommented parameters must be filled
+ * This file is part of the PHP Telegram Bot example-bot package.
+ * https://github.com/php-telegram-bot/example-bot/
+ *
+ * (c) PHP Telegram Bot Team
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ * This configuration file is used to run the bot with the webhook method.
  *
  * Please note that if you open this file with your browser you'll get the "Input is empty!" Exception.
- * This is a normal behaviour because this address has to be reached only by the Telegram servers.
+ * This is perfectly normal and expected, because the hook URL has to be reached only by the Telegram servers.
  */
 
 // Load composer
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Add you bot's API key and name
-$bot_api_key  = 'your:bot_api_key';
-$bot_username = 'username_bot';
-
-// Define all IDs of admin users in this array (leave as empty array if not used)
-$admin_users = [
-//    123,
-];
-
-// Define all paths for your custom commands in this array (leave as empty array if not used)
-$commands_paths = [
-    __DIR__ . '/Commands/',
-];
-
-// Enter your MySQL database credentials
-//$mysql_credentials = [
-//    'host'     => 'localhost',
-//    'user'     => 'dbuser',
-//    'password' => 'dbpass',
-//    'database' => 'dbname',
-//];
+// Load all configuration options
+/** @var array $config */
+$config = require __DIR__ . '/config.php';
 
 try {
     // Create Telegram API object
-    $telegram = new Longman\TelegramBot\Telegram($bot_api_key, $bot_username);
-
-    // Add commands paths containing your custom commands
-    $telegram->addCommandsPaths($commands_paths);
+    $telegram = new Longman\TelegramBot\Telegram($config['api_key'], $config['bot_username']);
 
     // Enable admin users
-    $telegram->enableAdmins($admin_users);
+    $telegram->enableAdmins($config['admins']);
 
-    // Enable MySQL
-    //$telegram->enableMySql($mysql_credentials);
+    // Add commands paths containing your custom commands
+    $telegram->addCommandsPaths($config['commands']['paths']);
+
+    // Enable MySQL if required
+    // $telegram->enableMySql($config['mysql']);
 
     // Logging (Error, Debug and Raw Updates)
     // https://github.com/php-telegram-bot/core/blob/master/doc/01-utils.md#logging
     //
     // (this example requires Monolog: composer require monolog/monolog)
-    //Longman\TelegramBot\TelegramLog::initialize(
+    // Longman\TelegramBot\TelegramLog::initialize(
     //    new Monolog\Logger('telegram_bot', [
-    //        (new Monolog\Handler\StreamHandler(__DIR__ . "/{$bot_username}_debug.log", Monolog\Logger::DEBUG))->setFormatter(new Monolog\Formatter\LineFormatter(null, null, true)),
-    //        (new Monolog\Handler\StreamHandler(__DIR__ . "/{$bot_username}_error.log", Monolog\Logger::ERROR))->setFormatter(new Monolog\Formatter\LineFormatter(null, null, true)),
+    //        (new Monolog\Handler\StreamHandler($config['logging']['debug']", Monolog\Logger::DEBUG))->setFormatter(new Monolog\Formatter\LineFormatter(null, null, true)),
+    //        (new Monolog\Handler\StreamHandler($config['logging']['error']", Monolog\Logger::ERROR))->setFormatter(new Monolog\Formatter\LineFormatter(null, null, true)),
     //    ]),
     //    new Monolog\Logger('telegram_bot_updates', [
-    //        (new Monolog\Handler\StreamHandler(__DIR__ . "/{$bot_username}_update.log", Monolog\Logger::INFO))->setFormatter(new Monolog\Formatter\LineFormatter('%message%' . PHP_EOL)),
+    //        (new Monolog\Handler\StreamHandler($config['logging']['update']", Monolog\Logger::INFO))->setFormatter(new Monolog\Formatter\LineFormatter('%message%' . PHP_EOL)),
     //    ])
-    //);
+    // );
 
-    // Set custom Upload and Download paths
-    //$telegram->setDownloadPath(__DIR__ . '/Download');
-    //$telegram->setUploadPath(__DIR__ . '/Upload');
+    // Set custom Download and Upload paths
+    // $telegram->setDownloadPath($config['paths']['download']);
+    // $telegram->setUploadPath($config['paths']['upload']);
 
-    // Here you can set some command specific parameters
-    // - Google geocode/timezone API key for /date command
-    // $telegram->setCommandConfig('date', ['google_api_key' => 'your_google_api_key_here']);
-    // - Payment Provider Token for /payment command.
-    // $telegram->setCommandConfig('payment', ['payment_provider_token' => 'your_payment_provider_token_here']);
+    // Load all command-specific configurations
+    // foreach ($config['commands']['configs'] as $command_name => $command_config) {
+    //     $telegram->setCommandConfig($command_name, $command_config);
+    // }
 
     // Requests Limiter (tries to prevent reaching Telegram API limits)
-    $telegram->enableLimiter();
+    $telegram->enableLimiter($config['limiter']);
 
     // Handle telegram webhook request
     $telegram->handle();
 
 } catch (Longman\TelegramBot\Exception\TelegramException $e) {
-    // Silence is golden!
-    //echo $e;
     // Log telegram errors
     Longman\TelegramBot\TelegramLog::error($e);
+
+    // Uncomment this to output any errors (ONLY FOR DEVELOPMENT!)
+    // echo $e;
 } catch (Longman\TelegramBot\Exception\TelegramLogException $e) {
-    // Silence is golden!
-    // Uncomment this to catch log initialisation errors
-    //echo $e;
+    // Uncomment this to output log initialisation errors (ONLY FOR DEVELOPMENT!)
+    // echo $e;
 }
