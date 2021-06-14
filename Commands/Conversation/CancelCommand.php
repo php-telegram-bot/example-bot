@@ -96,7 +96,7 @@ class CancelCommand extends UserCommand
      * @return ServerResponse
      * @throws TelegramException
      */
-    private function removeKeyboard($text): ServerResponse
+    private function removeKeyboard(string $text): ServerResponse
     {
         return $this->replyToChat($text, [
             'reply_markup' => Keyboard::remove(['selective' => true]),

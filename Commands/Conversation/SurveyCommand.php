@@ -36,7 +36,7 @@ class SurveyCommand extends UserCommand
     /**
      * @var string
      */
-    protected $description = 'Survery for bot users';
+    protected $description = 'Survey for bot users';
 
     /**
      * @var string
