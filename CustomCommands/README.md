@@ -8,4 +8,5 @@ You then can copy example Commands from the Command folder.
 
 **:exclamation: Important!**
 
-DO NOT COPY THE ENTIRE FOLDER CONTENT!!
+DO NOT COPY THE ENTIRE COMMAND FOLDER CONTENT!! 
+Some Command Files are Duplicated and may interfere with each other. 
