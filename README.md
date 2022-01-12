@@ -73,9 +73,11 @@ $ composer install
 
 ## 2. Adding your own commands
 
-You can find a few example commands in the [`Commands`](Commands) folder.
+To use Commands enable the [`CustomCommands`](CustomCommands) folder in the config.
 
+You can find a few example commands in the [`Commands`](Commands) folder.
 Do **NOT** just copy all of them to your bot, but instead learn from them and only add to your bot what you need.
+
 
 Adding any extra commands to your bot that you don't need can be a security risk!
 
