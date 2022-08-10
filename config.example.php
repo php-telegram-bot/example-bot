@@ -43,6 +43,8 @@ return [
     // All command related configs go here
     'commands'     => [
         // Define all paths for your custom commands
+        // DO NOT PUT THE COMMAND FOLDER THERE. IT WILL NOT WORK. 
+        // Copy each needed Commandfile into the CustomCommand folder and uncommend the Line 49 below
         'paths'   => [
             // __DIR__ . '/CustomCommands',
         ],
