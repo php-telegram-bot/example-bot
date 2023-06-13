@@ -1,7 +1,8 @@
 This Folder contains some examples how to use the Telegram Bot API
 
 
-** :exclamation: DO NOT USE THE COMMANDS FOLDER **
+**:exclamation: DO NOT USE THE COMMANDS FOLDER**
+
 As the title says, do not include the Commands folder into your config to use it as it is.
 Why? This folder contains some files multiple times which is an issue for the bot software, since every file can only exist once!
 For example: GenericmessageCommand.php
