@@ -50,7 +50,7 @@ class WhoamiCommand extends UserCommand
     /**
      * @var bool
      */
-    protected $private_only = true;
+    protected $private_only = false;
 
     /**
      * Main command execution
