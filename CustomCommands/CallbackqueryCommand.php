@@ -24,12 +24,14 @@ namespace Longman\TelegramBot\Commands\SystemCommands;
 define('__ROOT__', dirname(dirname(__FILE__)));
 
 require_once('positions.php');
+require_once $path . '/texts.php';
 
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Conversation;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Entities\Keyboard;
+use Longman\TelegramBot\Entities\InlineKeyboard;
 
 class CallbackqueryCommand extends SystemCommand
 {
@@ -76,34 +78,78 @@ class CallbackqueryCommand extends SystemCommand
 
         $this->conversation = new Conversation($chat_id, $chat_id, 'start');
 
-        // Load any existing notes from this conversation
-        $notes = &$this->conversation->notes;
-        $state = $notes['state'] ?? 0;
-        if ($state === 0) {
-            $notes['position'] = $callback_data;
-            $notes['state'] = 1;
-            $this->conversation->update();
-        }
+        $result = Request::emptyResponse();
         $data = [
             'chat_id'      => $chat_id,
             // Remove any keyboard by default
             'reply_markup' => Keyboard::remove(['selective' => true]),
         ];
-        $data['text'] =  'Как Вас зовут(ФИО):';
-        $result = Request::sendMessage($data);
 
-        $result = Request::editMessageText([
-            'chat_id'    => $chat_id,
-            'message_id' => $message->getMessageId(),
-            'text'       => 'Вы выбрали позицию: ' . getTextByData($callback_data),
-        ]);
+        if ('stop_cancle' === $callback_data) {
+            $result = Request::editMessageText([
+                'chat_id'    => $chat_id,
+                'message_id' => $message->getMessageId(),
+                'text'       => getTextValue('exit_command_cancle')
+            ]);
+            // $result = Request::sendMessage($data);
+            return $result;
+        }
+        if ('stop_command' === $callback_data) {
+            $this->conversation->stop();
+            $result = Request::editMessageText([
+                'chat_id'    => $chat_id,
+                'message_id' => $message->getMessageId(),
+                'text'       => getTextValue('exit_command_approve')
+            ]);
+            return $result;
+        }
+
+        // Load any existing notes from this conversation
+        $notes = &$this->conversation->notes;
+        $state = $notes['state'] ?? 0;
+        if ($state === 0) {
+            $positions = getPositionsArray();
+            if ('complete_position' !== $callback_data) {
+                if ($notes['position']) {
+                    if (in_array($callback_data, $notes['position'])) {
+                        $notes['position'] = array_filter($notes['position'], static function ($element) use ($callback_data) {
+                            return $element !== $callback_data;
+                        });
+                    } else {
+                        $notes['position'] = [$callback_data, ...($notes['position'] ?? [])];
+                    }
+                } else {
+                    $notes['position'] = [$callback_data, ...($notes['position'] ?? [])];
+                }
+
+                $positions = count($notes['position']) > 0 ? [
+                    ...$positions,
+                    [['text' => getTextValue('state_0_selected'), 'callback_data' => 'complete_position']]
+                ] : $positions;
+            } else {
+                $notes['state'] = 1;
+
+
+                $data['text'] =  getTextValue('state_1');
+                $result = Request::sendMessage($data);
+            }
+
+            foreach ($notes['position'] ?? [] as $key => $value) {
+                $positions = changePositionText($positions, $value, '✅' . getTextByData($value));
+            }
+
+            $this->conversation->update();
+
+            $text = getTextValue('state_0');
+            $result = Request::editMessageText([
+                'chat_id'    => $chat_id,
+                'message_id' => $message->getMessageId(),
+                'text'       => $text, 
+                'reply_markup' => new InlineKeyboard(...$positions) 
+            ]);
+        }
+
+
         return $result;
-        // return $this->replyToChat(
-        //     'Ваше имя',
-        //     ['parse_mode' => 'markdown']
-        // );
-        // return $callback_query->answer([
-        //     'text'       => 'Content of the callback data: ' . $callback_data,
-        // ]);
     }
 }

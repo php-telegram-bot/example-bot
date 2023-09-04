@@ -4,20 +4,59 @@ function getPositionsData()
 {
     return [
         [
-            ['text' => 'TEQUILA GIRLS', 'callback_data' => 'TEQUILA_GIRLS', 'require_fields' => ['photo']],
-            ['text' => 'TEQUILA MODELS', 'callback_data' => 'TEQUILA_MODELS', 'require_fields' => ['photo']],
+            [
+                'text' => 'TEQUILA GIRLS',
+                'callback_data' => 'TEQUILA_GIRLS',
+                'require_fields' => ['photo'],
+                'special_fields' => ['height']
+            ],
+            [
+                'text' => 'TEQUILA MODELS', 
+                'callback_data' => 'TEQUILA_MODELS', 
+                'require_fields' => ['photo'],
+                'special_fields' => ['height']
+            ],
         ],
         [
-            ['text' => 'TEQUILA BOYS', 'callback_data' => 'TEQUILA_BOYS', 'require_fields' => ['photo']],
-            ['text' => 'GO-GO GIRLS', 'callback_data' => 'GO_GO_GIRLS', 'require_fields' => ['photo']],
+            [
+                'text' => 'TEQUILA BOYS', 
+                'callback_data' => 'TEQUILA_BOYS', 
+                'require_fields' => ['photo'],
+                'special_fields' => ['height']
+            ],
+            [
+                'text' => 'GO-GO GIRLS', 
+                'callback_data' => 'GO_GO_GIRLS', 
+                'require_fields' => ['photo'],
+                'special_fields' => ['height']
+            ],
         ],
         [
-            ['text' => 'PARTY GIRLS', 'callback_data' => 'PARTY_GIRLS', 'require_fields' => ['photo']],
-            ['text' => 'PROMO MODELS', 'callback_data' => 'PROMO_MODELS', 'require_fields' => ['photo']],
+            [
+                'text' => 'PARTY GIRLS', 
+                'callback_data' => 'PARTY_GIRLS', 
+                'require_fields' => ['photo'],
+                'special_fields' => ['height']
+            ],
+            [
+                'text' => 'PROMO MODELS', 
+                'callback_data' => 'PROMO_MODELS', 
+                'require_fields' => ['photo'],
+                'special_fields' => ['height']
+            ],
         ],
         [
-            ['text' => 'IMAGE MODELS', 'callback_data' => 'IMAGE_MODELS', 'require_fields' => ['photo']],
-            ['text' => 'DJ - ДИДЖЕИ', 'callback_data' => 'DJ', 'require_fields' => []],
+            [
+                'text' => 'IMAGE MODELS', 
+                'callback_data' => 'IMAGE_MODELS', 
+                'require_fields' => ['photo'],
+                'special_fields' => ['height']
+            ],
+            [
+                'text' => 'DJ - ДИДЖЕИ', 
+                'callback_data' => 'DJ', 
+                'require_fields' => []
+            ],
         ],
         [
             ['text' => 'МС - ВЕДУЩИЕ', 'callback_data' => 'MC', 'require_fields' => []],
@@ -30,14 +69,31 @@ function getPositionsData()
     ];
 }
 
-function fieldIsRequired($position, $field)
+function fieldIsSpecial($positions, $field)
 {
-    foreach (getPositionsData() as $key => $value) {
-        foreach ($value as $i => $v) {
-            $r = in_array ($field, $v['require_fields']);
-            if($v['callback_data'] === $position && $r === true) {
-                return true;
-            }            
+    foreach ($positions as $position) {
+        foreach (getPositionsData() as $key => $value) {
+            foreach ($value as $i => $v) {
+                $r = in_array($field, $v['special_fields'] ?? []);
+                if ($v['callback_data'] === $position && $r === true) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+function fieldIsRequired($positions, $field)
+{
+    foreach ($positions as $position) {
+        foreach (getPositionsData() as $key => $value) {
+            foreach ($value as $i => $v) {
+                $r = in_array($field, $v['require_fields']);
+                if ($v['callback_data'] === $position && $r === true) {
+                    return true;
+                }
+            }
         }
     }
     return false;
@@ -50,6 +106,16 @@ function getPositionsArray()
             return ['text' => $value['text'], 'callback_data' => $value['callback_data']];
         }, $value);
     }, getPositionsData());
+}
+
+function changePositionText($positions, $callback_data, $text)
+{
+    return array_map(function ($value) use ($callback_data, $text) {
+        return array_map(function ($value) use ($callback_data, $text) {
+            if ($value['callback_data'] === $callback_data) return ['text' => $text, 'callback_data' => $value['callback_data']];
+            return ['text' => $value['text'], 'callback_data' => $value['callback_data']];
+        }, $value);
+    }, $positions);
 }
 
 function getTextByData($data)
