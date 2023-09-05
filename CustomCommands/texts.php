@@ -44,20 +44,36 @@ function getTextsArray()
         'state_11' => 'ссылка на ВКонтакте(vk.com):',
 
         'output' => 'Входящая заявка:' . PHP_EOL .
-            PHP_EOL . 'Пользователь: @user_name' . PHP_EOL .
-            'ID Пользователя: user_id' . PHP_EOL .
+            PHP_EOL . '<b>Пользователь:</b> @user_name' . PHP_EOL .
+            '<b>ID Пользователя: <code>user_id</code>' . PHP_EOL .
 
-            PHP_EOL . 'Должность: position' .
-            PHP_EOL . 'ФИО: surname' .
-            PHP_EOL . 'Возраст: age' .
-            PHP_EOL . 'Рост: height' .
-            PHP_EOL . 'Город: location' .
-            PHP_EOL . 'Контакты: phone_number' .
-            PHP_EOL . 'О себе: about' .
-            PHP_EOL . 'Опыт работы: experience' .
-            PHP_EOL . 'Занятость: employment' .
-            PHP_EOL . 'Подработку: sidejob' .
-            PHP_EOL . 'VK: vk',
+            PHP_EOL . '<b>Должность:</b> position' .
+            PHP_EOL . '<b>ФИО:</b> surname' .
+            PHP_EOL . '<b>Возраст:</b> age' .
+            PHP_EOL . '<b>Рост:</b> height' .
+            PHP_EOL . '<b>Город:</b> location' .
+            PHP_EOL . '<b>Контакты:</b> phone_number' .
+            PHP_EOL . '<b>О себе:</b> about' .
+            PHP_EOL . '<b>Опыт работы:</b> experience' .
+            PHP_EOL . '<b>Занятость:</b> employment' .
+            PHP_EOL . '<b>Подработку:</b> sidejob' .
+            PHP_EOL . '<b>VK:</b> vk',
+
+        'output_user' => 'Ваша анкета отправленаю.' . PHP_EOL .
+
+            PHP_EOL . '<b>Должность:</b> position' .
+            PHP_EOL . '<b>ФИО:</b> surname' .
+            PHP_EOL . '<b>Возраст:</b> age' .
+            PHP_EOL . '<b>Рост:</b> height' .
+            PHP_EOL . '<b>Город:</b> location' .
+            PHP_EOL . '<b>Контакты:</b> phone_number' .
+            PHP_EOL . '<b>О себе:</b> about' .
+            PHP_EOL . '<b>Опыт работы:</b> experience' .
+            PHP_EOL . '<b>Занятость:</b> employment' .
+            PHP_EOL . '<b>Подработку:</b> sidejob' .
+            PHP_EOL . '<b>VK:</b> vk' .
+            // PHP_EOL . '' .
+            PHP_EOL . '',
 
 
         // 'command_exit_des' => '',

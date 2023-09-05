@@ -375,7 +375,9 @@ class StartCommand extends UserCommand
                 $text             = '';
             case 12:
                 $this->conversation->update();
+
                 
+
                 unset($notes['state']);
 
                 $resumeData = $notes;
@@ -384,29 +386,47 @@ class StartCommand extends UserCommand
                 $resumeData['position'] = implode(', ', $notes['position']);
 
                 $out_text = getTextValue('output', $resumeData);
+                $out_text_user = getTextValue('output_user', $resumeData);
 
                 $noPhoto = $notes['photo_id'] === 'no_photo';
-                $noPhoto = count($notes['photo_id'] ?? []) === 0 ? $noPhoto : false;
-                $noPhoto = count($notes['video_id'] ?? []) === 0 ? $noPhoto : false;
-
+                if (!$noPhoto) {
+                    $noPhoto = count($notes['photo_id'] ?? []) === 0 ? $noPhoto : false;
+                    $noPhoto = count($notes['video_id'] ?? []) === 0 ? $noPhoto : false;
+                }
                 $photos = $notes['photo_id'] ?? [];
 
                 $videos = $notes['video_id'];
+
+                $data['parse_mode'] = 'html';
+
+                // $out_text_user .= PHP_EOL . 'Анкета готова!';
+                // $data['reply_markup'] = new InlineKeyboard([
+                //     ['text' => getTextValue('complete_command_send'), 'callback_data' => 'complete_command_send'],
+                //     ['text' => getTextValue('complete_command_edit'), 'callback_data' => 'complete_command_edit'],
+                //     ['text' => getTextValue('complete_command_cancle'), 'callback_data' => 'complete_command_cancle']
+                // ]);
+
+                $toAdmin = $data;
+                $toGroup = $data;
+
                 if ($noPhoto) {
-                    $data['text'] = $out_text;
+                    $data['text'] = $out_text_user;
+                    $toGroup['text'] = $out_text;
+                    $toAdmin['text'] = $out_text;
                 } else {
-                    $data['caption'] = $out_text;
+                    $data['caption'] = $out_text_user;
+                    $toGroup['caption'] = $out_text;
+                    $toAdmin['caption'] = $out_text;
                 }
 
                 $this->conversation->stop();
-                $toAdmin = $data;
-                $toGroup = $data;
+
                 $toAdmin['chat_id'] = 5458847537; // id админа которому будет отправленно
                 $toGroup['chat_id'] = -945423465; // id группы в которую будет отправленно
                 // $result = Request::emptyResponse();
                 if ($noPhoto) {
-                    // Request::sendMessage($toAdmin);
-                    // Request::sendMessage($toGroup);
+                    Request::sendMessage($toAdmin);
+                    Request::sendMessage($toGroup);
                     $result = Request::sendMessage($data);
                 } else {
                     // $result = Request::sendPhoto($data);
@@ -418,12 +438,19 @@ class StartCommand extends UserCommand
                         return ['type' => 'photo', 'media' => $id];
                     }, $photos ?? []);
                     $data['media'] = [...$p, ...$v];
-                    $data['media'][0]['caption'] = $out_text;
+                    $data['media'][0]['caption'] = $out_text_user;
+                    $data['media'][0]['parse_mode'] = 'html';
+
+                    $toGroup['media'][0]['caption'] = $out_text;
+                    $toAdmin['media'][0]['caption'] = $out_text;
 
                     $toAdmin['media'] = $toGroup['media'] = $data['media'];
-                    // Request::sendMediaGroup($toAdmin);
-                    // Request::sendMediaGroup($toGroup);
+                    Request::sendMediaGroup($toAdmin);
+                    Request::sendMediaGroup($toGroup);
+
+                    
                     $result = Request::sendMediaGroup($data);
+
                 }
                 break;
         }
