@@ -140,7 +140,7 @@ class CallbackqueryCommand extends SystemCommand
 
             $this->conversation->update();
 
-            $text = getTextValue('state_0');
+            $text = getTextValue('state_0', ['user_name' => $chat->getUsername()]);
             $result = Request::editMessageText([
                 'chat_id'    => $chat_id,
                 'message_id' => $message->getMessageId(),

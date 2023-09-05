@@ -86,6 +86,7 @@ class StartCommand extends UserCommand
         $text    = trim($message->getText(true));
         $chat_id = $chat->getId();
         $user_id = $user->getId();
+        $user_name = $user->getUsername();
         $command = $message->getCommand();
 
 
@@ -127,7 +128,7 @@ class StartCommand extends UserCommand
                     $notes['state'] = 0;
                     $this->conversation->update();
 
-                    $data['text'] = getTextValue('state_0', ['user_name' => $user->getUsername()]);
+                    $data['text'] = getTextValue('state_0', ['user_name' => $user_name]);
                     $data['reply_markup'] = new InlineKeyboard(...getPositionsArray());
 
                     $result = Request::sendMessage($data);
