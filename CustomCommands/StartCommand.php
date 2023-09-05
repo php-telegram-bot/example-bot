@@ -127,7 +127,7 @@ class StartCommand extends UserCommand
                     $notes['state'] = 0;
                     $this->conversation->update();
 
-                    $data['text'] = getTextValue('state_0');
+                    $data['text'] = getTextValue('state_0', ['user_name' => $user->getUsername()]);
                     $data['reply_markup'] = new InlineKeyboard(...getPositionsArray());
 
                     $result = Request::sendMessage($data);
@@ -339,6 +339,7 @@ class StartCommand extends UserCommand
                     break;
                 } else if ($text !== '' && $message->getContact() === null) {
                     $notes['phone_number'] = $text;
+                    $text             = '';
                 } else if ($message->getContact() !== null) {
                     $notes['phone_number'] = $message->getContact()->getPhoneNumber();
                 }
@@ -376,14 +377,17 @@ class StartCommand extends UserCommand
             case 12:
                 $this->conversation->update();
 
-                
+
 
                 unset($notes['state']);
 
                 $resumeData = $notes;
                 $resumeData['user_name'] = $user->getUsername();
                 $resumeData['user_id'] = $user_id;
-                $resumeData['position'] = implode(', ', $notes['position']);
+                $postitions_texts = array_map(function ($value) {
+                    return getTextByData($value);
+                }, $notes['position']);
+                $resumeData['position'] = implode(', ', $postitions_texts);
 
                 $out_text = getTextValue('output', $resumeData);
                 $out_text_user = getTextValue('output_user', $resumeData);
@@ -426,7 +430,7 @@ class StartCommand extends UserCommand
                 // $result = Request::emptyResponse();
                 if ($noPhoto) {
                     Request::sendMessage($toAdmin);
-                    Request::sendMessage($toGroup);
+                    // Request::sendMessage($toGroup);
                     $result = Request::sendMessage($data);
                 } else {
                     // $result = Request::sendPhoto($data);
@@ -440,19 +444,18 @@ class StartCommand extends UserCommand
                     $data['media'] = [...$p, ...$v];
                     $data['media'][0]['caption'] = $out_text_user;
                     $data['media'][0]['parse_mode'] = 'html';
-                    
+
                     $toAdmin['media'] = $toGroup['media'] = $data['media'];
 
                     $toGroup['media'][0]['caption'] = $out_text;
                     $toAdmin['media'][0]['caption'] = $out_text;
 
-                    
+
                     Request::sendMediaGroup($toAdmin);
-                    Request::sendMediaGroup($toGroup);
+                    // Request::sendMediaGroup($toGroup);
 
-                    
+
                     $result = Request::sendMediaGroup($data);
-
                 }
                 break;
         }
