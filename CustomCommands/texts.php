@@ -45,7 +45,7 @@ function getTextsArray()
 
         'output' => 'Входящая заявка:' . PHP_EOL .
             PHP_EOL . '<b>Пользователь:</b> @user_name' . PHP_EOL .
-            '<b>ID Пользователя: <code>user_id</code>' . PHP_EOL .
+            '<b>ID Пользователя:</b> <code>user_id</code>' . PHP_EOL .
 
             PHP_EOL . '<b>Должность:</b> position' .
             PHP_EOL . '<b>ФИО:</b> surname' .
@@ -87,5 +87,4 @@ function getTextValue($key, $content = [])
     $keys = array_keys($content);
     $values = array_values($content);
     return str_replace($keys, $values, $str);
-    // return $texts[$key] ?? 'no value for key: ' . $key;
 }

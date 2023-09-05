@@ -440,11 +440,13 @@ class StartCommand extends UserCommand
                     $data['media'] = [...$p, ...$v];
                     $data['media'][0]['caption'] = $out_text_user;
                     $data['media'][0]['parse_mode'] = 'html';
+                    
+                    $toAdmin['media'] = $toGroup['media'] = $data['media'];
 
                     $toGroup['media'][0]['caption'] = $out_text;
                     $toAdmin['media'][0]['caption'] = $out_text;
 
-                    $toAdmin['media'] = $toGroup['media'] = $data['media'];
+                    
                     Request::sendMediaGroup($toAdmin);
                     Request::sendMediaGroup($toGroup);
 
