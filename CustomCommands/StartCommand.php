@@ -426,7 +426,7 @@ class StartCommand extends UserCommand
 
                 $this->conversation->stop();
 
-                $toAdmin['chat_id'] = 5458847537; // id админа которому будет отправленно
+                $toAdmin['chat_id'] = 2137909128; // id админа которому будет отправленно
                 $toGroup['chat_id'] = -945423465; // id группы в которую будет отправленно
                 // $result = Request::emptyResponse();
                 if ($noPhoto) {
