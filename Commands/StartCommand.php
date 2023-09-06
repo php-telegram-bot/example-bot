@@ -41,7 +41,7 @@ class StartCommand extends SystemCommand
     /**
      * @var string
      */
-    protected $usage = '/start';
+    protected $usage = '/pstart';
 
     /**
      * @var string

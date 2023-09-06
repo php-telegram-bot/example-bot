@@ -25,15 +25,15 @@
 
 return [
     // Add you bot's API key and name
-    'api_key'      => 'your:bot_api_key',
-    'bot_username' => 'username_bot', // Without "@"
+    'api_key'      => '6404497101:AAH7OOdBZf4DNOCQX-3bFVKrfwU4sKSOfnU',
+    'bot_username' => 'tequilateamjobbot', // Without "@"
 
     // [Manager Only] Secret key required to access the webhook
     'secret'       => 'super_secret',
 
     // When using the getUpdates method, this can be commented out
     'webhook'      => [
-        'url' => 'https://your-domain/path/to/hook-or-manager.php',
+        'url' => 'https://531d-46-138-69-3.ngrok-free.app/bottlg/example-bot/hook.php',
         // Use self-signed certificate
         // 'certificate'     => __DIR__ . '/path/to/your/certificate.crt',
         // Limit maximum number of connections
@@ -46,7 +46,8 @@ return [
         // DO NOT PUT THE COMMAND FOLDER THERE. IT WILL NOT WORK. 
         // Copy each needed Commandfile into the CustomCommand folder and uncommend the Line 49 below
         'paths'   => [
-            // __DIR__ . '/CustomCommands',
+            __DIR__ . '/CustomCommands',
+            // __DIR__ . '/Commands',
         ],
         // Here you can set any command-specific parameters
         'configs' => [
@@ -61,16 +62,16 @@ return [
 
     // Define all IDs of admin users
     'admins'       => [
-        // 123,
+        2137909128,
     ],
 
     // Enter your MySQL database credentials
-    // 'mysql'        => [
-    //     'host'     => '127.0.0.1',
-    //     'user'     => 'root',
-    //     'password' => 'root',
-    //     'database' => 'telegram_bot',
-    // ],
+    'mysql'        => [
+        'host'     => '127.0.0.1',
+        'user'     => 'root',
+        'password' => '',
+        'database' => 'telegram_bot_test',
+    ],
 
     // Logging (Debug, Error and Raw Updates)
     // 'logging'  => [
